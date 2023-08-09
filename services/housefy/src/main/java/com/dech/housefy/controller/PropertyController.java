@@ -37,4 +37,10 @@ public class PropertyController {
     public Property save(@RequestBody Property property) {
         return propertyService.save(property);
     }
+
+    @GetMapping(value = "/test", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.OK)
+    public String test() {
+        return "prueba docker";
+    }
 }
