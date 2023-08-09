@@ -41,6 +41,6 @@ public class PropertyController {
     @GetMapping(value = "/test", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public String test() {
-        return "prueba docker";
+        return "prueba docker2";
     }
 }
