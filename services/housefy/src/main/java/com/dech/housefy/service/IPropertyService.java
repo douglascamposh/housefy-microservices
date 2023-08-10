@@ -9,4 +9,5 @@ import java.util.List;
 public interface IPropertyService {
     List<PropertyDTO> findAll();
     PropertyDTO save(PropertyDTO property);
+    PropertyDTO findById(String id);
 }
