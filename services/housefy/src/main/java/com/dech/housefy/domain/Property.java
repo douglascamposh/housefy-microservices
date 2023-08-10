@@ -1,11 +1,12 @@
 package com.dech.housefy.domain;
 
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -18,14 +19,14 @@ public class Property {
     @Id
     private String id;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
     private String description;
 
     private Address address;
 
+    @NotBlank
     private String type;
 
     private String ownerId;

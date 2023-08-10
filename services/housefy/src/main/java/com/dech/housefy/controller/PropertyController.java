@@ -3,18 +3,13 @@ package com.dech.housefy.controller;
 import com.dech.housefy.dto.PropertyDTO;
 import com.dech.housefy.service.IPropertyService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +25,7 @@ public class PropertyController {
     private final IPropertyService propertyService;
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     public List<PropertyDTO> findAll() {
         return propertyService.findAll();
     }
@@ -38,6 +34,12 @@ public class PropertyController {
     @ResponseStatus(HttpStatus.OK)
     public PropertyDTO save(@Valid @RequestBody PropertyDTO property) {
         return propertyService.save(property);
+    }
+
+    @GetMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @ResponseStatus(HttpStatus.OK)
+    public PropertyDTO findById(@Valid @NotNull @PathVariable("id") String id) {
+        return propertyService.findById(id);
     }
 
     @GetMapping(value = "/test", produces = {MediaType.APPLICATION_JSON_VALUE})
