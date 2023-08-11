@@ -29,6 +29,7 @@ public class PropertyServiceImpl implements IPropertyService {
 
     @Override
     public PropertyDTO save(PropertyDTO propertyDTO) {
+        propertyDTO.setId(null);
         Property property = modelMapper.map(propertyDTO, Property.class);
         Property newProperty = propertyRepository.save(property);
         return modelMapper.map(newProperty, PropertyDTO.class);
@@ -41,5 +42,12 @@ public class PropertyServiceImpl implements IPropertyService {
             return modelMapper.map(property.get(), PropertyDTO.class);
         }
         throw new DataNotFoundException("Unable to get Property by id: " + id);
+    }
+
+    @Override
+    public PropertyDTO update(PropertyDTO property) {
+        findById(property.getId());
+        Property propertyToUpdate = modelMapper.map(property, Property.class);
+        return modelMapper.map(propertyRepository.save(propertyToUpdate), PropertyDTO.class);
     }
 }

@@ -25,7 +25,6 @@ import java.util.List;
 @ToString
 public class PropertyDTO {
 
-    @Id
     private String id;
 
     @NotNull
