@@ -1,7 +1,9 @@
 package com.dech.housefy.controller;
 
+import com.dech.housefy.dto.ImageUploadDTO;
 import com.dech.housefy.dto.PropertyDTO;
 import com.dech.housefy.service.IPropertyService;
+import com.dech.housefy.service.IS3Service;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class PropertyController {
     private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
 
     private final IPropertyService propertyService;
+    private final IS3Service s3Service;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
@@ -52,6 +55,12 @@ public class PropertyController {
     @GetMapping(value = "/test", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public String test() {
-        return "prueba docker3";
+        return "prueba docker 4";
+    }
+
+    @PostMapping("/{id}/upload")
+    public String handleUploadForm(@Valid @NotNull @PathVariable("id") String id, @RequestBody ImageUploadDTO imageUploadDTO) {
+        s3Service.uploadImageProperties(id, imageUploadDTO);
+        return "message";
     }
 }
