@@ -7,8 +7,6 @@ import com.dech.housefy.repository.IPropertyRepository;
 import com.dech.housefy.service.IPropertyService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

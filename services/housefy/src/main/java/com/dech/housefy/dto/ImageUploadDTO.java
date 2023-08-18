@@ -1,13 +1,15 @@
 package com.dech.housefy.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.web.multipart.MultipartFile;
 @Getter
 @Setter
+@AllArgsConstructor
+@ToString
 public class ImageUploadDTO {
-    private MultipartFile image;
+    MultipartFile image;
     private String filename;
-    private String entityType;
-    private String entityId;
 }
