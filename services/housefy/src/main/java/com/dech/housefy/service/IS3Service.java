@@ -5,4 +5,5 @@ import com.dech.housefy.dto.ImageUploadDTO;
 
 public interface IS3Service {
     ImageResponseDTO uploadImageProperties(ImageUploadDTO imageUploadDTO);
+    void deleteImageProperties(String imageId);
 }

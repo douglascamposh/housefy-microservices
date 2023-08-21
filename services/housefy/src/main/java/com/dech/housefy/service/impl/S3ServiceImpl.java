@@ -26,10 +26,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.regions.providers.DefaultAwsRegionProviderChain;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.GetUrlRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectResponse;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.model.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +51,37 @@ public class S3ServiceImpl implements IS3Service {
         logger.info("uploadImageProperties - s3PathProperties: " + s3PathProperties);
         String url = uploadImage(bucketName, filename, s3PathProperties, imageUploadDTO.getImage());
         return ImageResponseDTO.builder().imageId(filename).url(url).build();
+    }
+
+    @Override
+    public void deleteImageProperties(String imageId) {
+        deleteImage(bucketName, imageId, propertiesFolder + "/");
+    }
+
+    private void deleteImage(String customBucketName, String keyName, String foldersPath) {
+        try {
+            if(customBucketName.isEmpty()){
+                throw new InternalErrorException("Bucket name is empty, please contact IT");
+            }
+            DeleteObjectRequest request = DeleteObjectRequest.builder()
+                    .bucket(customBucketName)
+                    .key(foldersPath + "/" + keyName)
+                    .build();
+            DeleteObjectResponse response = s3client.deleteObject(request);
+        } catch (InternalErrorException ioe) {
+            logger.error("IOException: " + ioe.getMessage());
+            throw new InternalErrorException("Cannot upload image - msg:"+ ioe.getMessage());
+        } catch (AwsServiceException ase) {
+            logger.error("Caught an AmazonServiceException from PUT requests, rejected reasons:" + ase.getMessage());
+            logger.error("HTTP Status Code: " + ase.statusCode());
+            logger.error("AWS Error Code: " + ase.awsErrorDetails().errorCode());
+            logger.error("Error message: " + ase.awsErrorDetails().errorMessage());
+            throw ase;
+        } catch (SdkClientException ace) {
+            logger.info("Caught an AmazonClientException: ");
+            logger.info("Error Message: " + ace.getMessage());
+            throw ace;
+        }
     }
 
     private String uploadImage(String customBucketName, String keyName, String foldersPath, MultipartFile file) {
