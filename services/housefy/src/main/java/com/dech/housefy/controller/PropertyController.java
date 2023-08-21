@@ -66,4 +66,11 @@ public class PropertyController {
         logger.info("uploadListingImage starting... filename {}", imageUploadDTO.getFilename());
         return s3Service.uploadImageProperties(imageUploadDTO);
     }
+
+    @DeleteMapping(value = "/delete/{imageId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteImageS3(HttpServletRequest request, @NotNull @PathVariable("imageId") String imageId) {
+        logger.info("deleting starting... filename {}", imageId);
+        s3Service.deleteImageProperties(imageId);
+    }
 }
