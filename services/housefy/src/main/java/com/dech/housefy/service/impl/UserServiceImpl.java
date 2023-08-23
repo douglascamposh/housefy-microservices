@@ -5,6 +5,7 @@ import com.dech.housefy.dto.JwtAuthResponse;
 import com.dech.housefy.dto.SigninRequest;
 import com.dech.housefy.dto.SignupRequest;
 import com.dech.housefy.dto.UserDTO;
+import com.dech.housefy.enums.Role;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.InternalErrorException;
 import com.dech.housefy.repository.IUserRepository;
@@ -41,7 +42,7 @@ public class UserServiceImpl implements IUserService {
             throw new InternalErrorException("User with email: " + signupRequest.getEmail() + " already exists");
         }
         User user = modelMapper.map(signupRequest, User.class);
-        user.setRole("ROLE_USER");
+        user.setRole(Role.USER.toString());//Todo: chan ge to List of roles
         user.setPassword(passworEncoder.encode(signupRequest.getPassword()));
         userRepository.save(user);
         String jwt = jwtService.generateToken(user);

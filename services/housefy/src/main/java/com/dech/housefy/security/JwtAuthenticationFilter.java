@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final IJwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final IUserService userService;
+
     @Override
     protected void doFilterInternal(
             @NotNull HttpServletRequest request,
@@ -40,7 +40,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String email = jwtService.getEmailFromToken(token);
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) { //user is not logged in
             UserDetails user = userDetailsService.loadUserByUsername(email);
-//            UserDTO userDTO = userService.findByEmail(email); //check how to use User instead of UserDetails
             if (jwtService.isTokenValid(token, user)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         user,

@@ -1,9 +1,7 @@
 package com.dech.housefy.domain;
 
 import com.dech.housefy.enums.Role;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,8 +12,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
-@RequiredArgsConstructor
 public class User extends BaseUser implements UserDetails {
 
     private String password;
