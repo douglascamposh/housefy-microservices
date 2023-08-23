@@ -1,19 +1,21 @@
-package com.dech.housefy.dto;
+package com.dech.housefy.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+
 
 @Getter
 @Setter
-public class UserDTO {
+public class BaseUser {
+    @Id
     private String id;
     @NotBlank
     private String name;
     @NotBlank
     private String lastName;
-    @NotBlank
-    private String email;
+    @NotBlank String email;
     @NotBlank
     private String phoneNumber;
 }
