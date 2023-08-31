@@ -90,10 +90,14 @@ public class S3ServiceImpl implements IS3Service {
             if(customBucketName.isEmpty()){
                 throw new InternalErrorException("Bucket name is empty, please contact IT");
             }
+            String contentType = "image/jpg";
+            if (keyName.contains("svg")) {
+                contentType = "image/svg+xml";
+            }
             PutObjectRequest request = PutObjectRequest.builder()
                     .bucket(customBucketName)
                     .key(foldersPath + keyName)
-                    .contentType("image/jpg")
+                    .contentType(contentType)
                     .build();
             PutObjectResponse response = s3client.putObject(request,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
