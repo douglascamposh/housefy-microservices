@@ -22,6 +22,12 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     private static final String[] WHITE_LIST_URLS = {
+        //Swagger ui
+        "/api-docs",
+        "/swagger-ui/**",
+        "/swagger-resources",
+        "/swagger-resources/**",
+        // public
         "/",
         "/api/v1/auth/*",
         "/api/v1/properties",
