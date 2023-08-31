@@ -3,6 +3,7 @@ package com.dech.housefy.controller;
 import com.dech.housefy.dto.ImageResponseDTO;
 import com.dech.housefy.dto.ImageUploadDTO;
 import com.dech.housefy.dto.PropertyDTO;
+import com.dech.housefy.dto.SubPropertyDTO;
 import com.dech.housefy.service.IPropertyService;
 import com.dech.housefy.service.IS3Service;
 import jakarta.servlet.http.HttpServletRequest;
@@ -54,12 +55,6 @@ public class PropertyController {
         return propertyService.update(property);
     }
 
-    @GetMapping(value = "/test", produces = {MediaType.APPLICATION_JSON_VALUE})
-    @ResponseStatus(HttpStatus.OK)
-    public String test() {
-        return "prueba docker 4";
-    }
-
     @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public ImageResponseDTO imageUploadDTO(HttpServletRequest request, @ModelAttribute ImageUploadDTO imageUploadDTO) {
@@ -72,5 +67,12 @@ public class PropertyController {
     public void deleteImageS3(HttpServletRequest request, @NotNull @PathVariable("imageId") String imageId) {
         logger.info("deleting starting... filename {}", imageId);
         s3Service.deleteImageProperties(imageId);
+    }
+
+    @PostMapping(value = "{id}/subproperties")
+    @ResponseStatus(HttpStatus.OK)
+    public PropertyDTO addSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody SubPropertyDTO subPropertyDTO){
+        logger.info("Adding sub property with code: {} to property with Id: {}",subPropertyDTO.getCode(), id);
+        return propertyService.addSubProperty(id, subPropertyDTO);
     }
 }

@@ -91,6 +91,19 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = {DuplicateDataException.class})
+    public ResponseEntity handleDuplicateDataExceptions(RuntimeException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(
+            new Date(),
+            HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+            ex.getMessage(),
+            appName,
+            request.getDescription(false)
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
 //    @ExceptionHandler(value = { UnauthorizedException.class })
 //    public ResponseEntity handleUnauthorizedExceptions(
 //            RuntimeException ex, WebRequest request) {

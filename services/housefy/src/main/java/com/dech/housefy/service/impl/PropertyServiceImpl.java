@@ -1,14 +1,20 @@
 package com.dech.housefy.service.impl;
 
 import com.dech.housefy.domain.Property;
+import com.dech.housefy.domain.SubProperty;
 import com.dech.housefy.dto.PropertyDTO;
+import com.dech.housefy.dto.SubPropertyDTO;
 import com.dech.housefy.error.DataNotFoundException;
+import com.dech.housefy.error.DuplicateDataException;
 import com.dech.housefy.repository.IPropertyRepository;
+import com.dech.housefy.repository.IPropertyRepositoryImpl;
 import com.dech.housefy.service.IPropertyService;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +25,7 @@ public class PropertyServiceImpl implements IPropertyService {
 
     private final IPropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
+    private final IPropertyRepositoryImpl propertyRepositoryImpl;
 
     @Override
     public List<PropertyDTO> findAll() {
@@ -47,5 +54,17 @@ public class PropertyServiceImpl implements IPropertyService {
         findById(property.getId());
         Property propertyToUpdate = modelMapper.map(property, Property.class);
         return modelMapper.map(propertyRepository.save(propertyToUpdate), PropertyDTO.class);
+    }
+
+    @Override
+    public PropertyDTO addSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
+        this.findById(propertyId);
+        Property propertyFound = propertyRepositoryImpl.findSubPropertyByCode(subPropertyDTO.getCode());
+        if (propertyFound != null) {
+            throw new DuplicateDataException("The element with code: " + subPropertyDTO.getCode() + "is already added");
+        }
+        SubProperty subProperty = modelMapper.map(subPropertyDTO, SubProperty.class);
+        subProperty.setId(new ObjectId().toString());
+        return modelMapper.map(propertyRepositoryImpl.addSubProperty(propertyId, subProperty), PropertyDTO.class);
     }
 }

@@ -3,18 +3,23 @@ package com.dech.housefy.domain;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Setter
 @Getter
-@Document("property")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "property")
 public class Property {
     @Id
     private String id;
@@ -31,10 +36,13 @@ public class Property {
 
     private String ownerId;
 
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
     private Long totalProperties;
 
     private Long propertiesAvailable;
+
+    @Builder.Default
+    private List<SubProperty> subProperties = Collections.emptyList();
 
 }
