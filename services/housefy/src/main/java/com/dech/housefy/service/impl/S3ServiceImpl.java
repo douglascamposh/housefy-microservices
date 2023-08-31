@@ -65,7 +65,7 @@ public class S3ServiceImpl implements IS3Service {
             }
             DeleteObjectRequest request = DeleteObjectRequest.builder()
                     .bucket(customBucketName)
-                    .key(foldersPath + "/" + keyName)
+                    .key(foldersPath + keyName)
                     .build();
             DeleteObjectResponse response = s3client.deleteObject(request);
         } catch (InternalErrorException ioe) {
@@ -92,14 +92,14 @@ public class S3ServiceImpl implements IS3Service {
             }
             PutObjectRequest request = PutObjectRequest.builder()
                     .bucket(customBucketName)
-                    .key(foldersPath + "/" + keyName)
+                    .key(foldersPath + keyName)
                     .contentType("image/jpg")
                     .build();
             PutObjectResponse response = s3client.putObject(request,
                     RequestBody.fromInputStream(file.getInputStream(), file.getSize()));
             String url = s3client.utilities().getUrl(GetUrlRequest.builder()
                 .bucket(customBucketName)
-                .key(foldersPath + "/" + keyName)
+                .key(foldersPath + keyName)
                 .build()
             ).toExternalForm();
             logger.info("uploadImage - url: " + url);

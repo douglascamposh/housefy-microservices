@@ -38,6 +38,8 @@ public class Property {
 
     private List<Image> images = new ArrayList<>();
 
+    private Image imagePlan;
+
     private Long totalProperties;
 
     private Long propertiesAvailable;

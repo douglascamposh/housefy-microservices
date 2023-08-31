@@ -45,6 +45,8 @@ public class PropertyDTO {
 
     private List<Image> images = new ArrayList<>();
 
+    private Image imagePlan;
+
     @NotNull
     @Positive
     private Long totalProperties;
