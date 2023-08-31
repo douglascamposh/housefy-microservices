@@ -3,6 +3,7 @@ package com.dech.housefy.dto;
 import com.dech.housefy.domain.Address;
 import com.dech.housefy.domain.Image;
 
+import com.dech.housefy.domain.SubProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +16,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -41,7 +43,7 @@ public class PropertyDTO {
 
     private String ownerId;
 
-    private List<Image> images;
+    private List<Image> images = new ArrayList<>();
 
     @NotNull
     @Positive
@@ -51,4 +53,5 @@ public class PropertyDTO {
     @Positive
     private Long propertiesAvailable;
 
+    private List<SubPropertyDTO> subProperties = new ArrayList<>();
 }
