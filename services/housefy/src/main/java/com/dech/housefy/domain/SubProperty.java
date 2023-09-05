@@ -17,5 +17,5 @@ public class SubProperty {
     private String code;
     private Long size;
     private Float price;
-    private Boolean isAvailable;
+    private String svgId;
 }
