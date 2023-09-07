@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -22,7 +23,7 @@ public class BaseUser {
     String email;
     @NotBlank
     private String phoneNumber;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
 //    @CreatedDate
 //    private LocalDateTime createdDate;
 

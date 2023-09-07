@@ -29,7 +29,14 @@ public class PropertyRepositoryImpl implements IPropertyRepositoryImpl {
 
     @Override
     public Property findSubPropertyByCode(String code) {
+        //Todo: it shoudl be find by propertyId and code
         Query findQuery = new Query(Criteria.where("subProperties.code").is(code));
+        return mongoTemplate.findOne(findQuery, Property.class);
+    }
+
+    @Override
+    public Property findByPropertyIdAndSubPropertyId(String propertyId, String subPropertyId) {
+        Query findQuery = new Query(Criteria.where("id").is(propertyId).and("subProperties.id").is(subPropertyId));
         return mongoTemplate.findOne(findQuery, Property.class);
     }
 }

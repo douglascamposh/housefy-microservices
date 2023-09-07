@@ -8,10 +8,7 @@ import lombok.Data;
 public class SoldPropertyFormDTO {
     @PositiveOrZero
     private Float onAccount;
-    @PositiveOrZero
-    private Float balance;
-//    @PositiveOrZero
-//    private Float total; Todo: the todal should be returned from the subproperty, also create soldpropertyDtoResponse to add the code apartment
+    private Float total;
     @NotBlank
     private String subPropertyId;
     @NotBlank

@@ -61,6 +61,7 @@ public class S3ServiceImpl implements IS3Service {
     private void deleteImage(String customBucketName, String keyName, String foldersPath) {
         try {
             if(customBucketName.isEmpty()){
+                logger.error("Bucket name is empty");
                 throw new InternalErrorException("Bucket name is empty, please contact IT");
             }
             DeleteObjectRequest request = DeleteObjectRequest.builder()
