@@ -37,7 +37,7 @@ public class PropertyController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
-    public PropertyDTO save(@Valid @RequestBody PropertyDTO property) {
+    public PropertyDTO save(@Valid @RequestBody PropertyFormDTO property) {
         return propertyService.save(property);
     }
 

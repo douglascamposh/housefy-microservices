@@ -3,6 +3,7 @@ package com.dech.housefy.service.impl;
 import com.dech.housefy.domain.Property;
 import com.dech.housefy.domain.SubProperty;
 import com.dech.housefy.dto.PropertyDTO;
+import com.dech.housefy.dto.PropertyFormDTO;
 import com.dech.housefy.dto.SubPropertyDTO;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.DuplicateDataException;
@@ -37,10 +38,10 @@ public class PropertyServiceImpl implements IPropertyService {
     }
 
     @Override
-    public PropertyDTO save(PropertyDTO propertyDTO) {
-        propertyDTO.setId(null);
+    public PropertyDTO save(PropertyFormDTO propertyDTO) {
         Property property = modelMapper.map(propertyDTO, Property.class);
         Property newProperty = propertyRepository.save(property);
+        logger.info("New Property created: " + newProperty.getId());
         return modelMapper.map(newProperty, PropertyDTO.class);
     }
 
