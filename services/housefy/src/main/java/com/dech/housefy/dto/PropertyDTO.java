@@ -47,11 +47,9 @@ public class PropertyDTO {
 
     private Image imagePlan;
 
-    @NotNull
     @Positive
     private Long totalProperties;
 
-    @NotNull
     @Positive
     private Long propertiesAvailable;
 

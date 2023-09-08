@@ -7,4 +7,5 @@ import com.dech.housefy.dto.PropertyDTO;
 public interface IPropertyRepositoryImpl {
     Property addSubProperty(String propertyId, SubProperty subProperty);
     Property findSubPropertyByCode(String code);
+    Property findByPropertyIdAndSubPropertyId(String propertyId, String subPropertyId);
 }

@@ -40,10 +40,6 @@ public class Property {
 
     private Image imagePlan;
 
-    private Long totalProperties;
-
-    private Long propertiesAvailable;
-
     @Builder.Default
     private List<SubProperty> subProperties = Collections.emptyList();
 

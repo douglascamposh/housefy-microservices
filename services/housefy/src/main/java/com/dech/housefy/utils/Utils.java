@@ -1,6 +1,9 @@
 package com.dech.housefy.utils;
 
 import java.net.URLDecoder;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -23,5 +26,10 @@ public class Utils {
         long unixTime = System.currentTimeMillis();
         newCleanName = unixTime + "-" + newCleanName;
         return newCleanName;
+    }
+
+    public static LocalDate convertStringToDate(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        return LocalDate.parse(date, formatter);
     }
 }

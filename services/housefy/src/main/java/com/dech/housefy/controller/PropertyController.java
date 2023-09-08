@@ -1,11 +1,9 @@
 package com.dech.housefy.controller;
 
-import com.dech.housefy.dto.ImageResponseDTO;
-import com.dech.housefy.dto.ImageUploadDTO;
-import com.dech.housefy.dto.PropertyDTO;
-import com.dech.housefy.dto.SubPropertyDTO;
+import com.dech.housefy.dto.*;
 import com.dech.housefy.service.IPropertyService;
 import com.dech.housefy.service.IS3Service;
+import com.dech.housefy.service.facade.IPropertyFacade;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +27,7 @@ public class PropertyController {
 
     private final IPropertyService propertyService;
     private final IS3Service s3Service;
+    private final IPropertyFacade propertyFacade;
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
@@ -38,7 +37,7 @@ public class PropertyController {
 
     @PostMapping(produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
-    public PropertyDTO save(@Valid @RequestBody PropertyDTO property) {
+    public PropertyDTO save(@Valid @RequestBody PropertyFormDTO property) {
         return propertyService.save(property);
     }
 
@@ -74,5 +73,12 @@ public class PropertyController {
     public PropertyDTO addSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody SubPropertyDTO subPropertyDTO){
         logger.info("Adding sub property with code: {} to property with Id: {}",subPropertyDTO.getCode(), id);
         return propertyService.addSubProperty(id, subPropertyDTO);
+    }
+
+    @GetMapping(value = "{id}/subproperties")
+    @ResponseStatus(HttpStatus.OK)
+    public PropertyInfoDTO getPropertyInfo(@Valid @NotNull @PathVariable("id") String id) {
+        logger.info("Get sub properties info by propertyId: " + id);
+        return propertyFacade.getPropertiesInfo(id);
     }
 }

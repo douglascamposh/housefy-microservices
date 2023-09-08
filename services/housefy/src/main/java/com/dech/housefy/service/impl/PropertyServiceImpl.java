@@ -3,15 +3,19 @@ package com.dech.housefy.service.impl;
 import com.dech.housefy.domain.Property;
 import com.dech.housefy.domain.SubProperty;
 import com.dech.housefy.dto.PropertyDTO;
+import com.dech.housefy.dto.PropertyFormDTO;
 import com.dech.housefy.dto.SubPropertyDTO;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.DuplicateDataException;
 import com.dech.housefy.repository.IPropertyRepository;
 import com.dech.housefy.repository.IPropertyRepositoryImpl;
 import com.dech.housefy.service.IPropertyService;
+import com.dech.housefy.service.facade.impl.PropertyFacadeImpl;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ public class PropertyServiceImpl implements IPropertyService {
     private final IPropertyRepository propertyRepository;
     private final ModelMapper modelMapper;
     private final IPropertyRepositoryImpl propertyRepositoryImpl;
+    private final Logger logger = LoggerFactory.getLogger(PropertyServiceImpl.class);
 
     @Override
     public List<PropertyDTO> findAll() {
@@ -33,10 +38,10 @@ public class PropertyServiceImpl implements IPropertyService {
     }
 
     @Override
-    public PropertyDTO save(PropertyDTO propertyDTO) {
-        propertyDTO.setId(null);
+    public PropertyDTO save(PropertyFormDTO propertyDTO) {
         Property property = modelMapper.map(propertyDTO, Property.class);
         Property newProperty = propertyRepository.save(property);
+        logger.info("New Property created: " + newProperty.getId());
         return modelMapper.map(newProperty, PropertyDTO.class);
     }
 
@@ -46,6 +51,7 @@ public class PropertyServiceImpl implements IPropertyService {
         if (property.isPresent()) {
             return modelMapper.map(property.get(), PropertyDTO.class);
         }
+        logger.error("Unable to get Property by id: " + id);
         throw new DataNotFoundException("Unable to get Property by id: " + id);
     }
 
@@ -58,13 +64,23 @@ public class PropertyServiceImpl implements IPropertyService {
 
     @Override
     public PropertyDTO addSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
-        this.findById(propertyId);
-        Property propertyFound = propertyRepositoryImpl.findSubPropertyByCode(subPropertyDTO.getCode());
-        if (propertyFound != null) {
+        PropertyDTO propertyDTO = this.findById(propertyId);
+        Optional<SubPropertyDTO> subPropertyFound = propertyDTO.getSubProperties().stream()
+                .filter(prop -> prop.getCode() != null && prop.getCode().equals(subPropertyDTO.getCode())).findFirst();
+        if (subPropertyFound.isPresent()) {
             throw new DuplicateDataException("The element with code: " + subPropertyDTO.getCode() + "is already added");
         }
         SubProperty subProperty = modelMapper.map(subPropertyDTO, SubProperty.class);
         subProperty.setId(new ObjectId().toString());
         return modelMapper.map(propertyRepositoryImpl.addSubProperty(propertyId, subProperty), PropertyDTO.class);
+    }
+
+    @Override
+    public PropertyDTO findByPropertyIdAndSubPropertyId(String propertyId, String subPropertyId) {
+        Property property = propertyRepositoryImpl.findByPropertyIdAndSubPropertyId(propertyId, subPropertyId);
+        if (property == null) {
+            throw new DataNotFoundException("Unable to ge Property by subPropertyId: " + subPropertyId);
+        }
+        return modelMapper.map(property, PropertyDTO.class);
     }
 }
