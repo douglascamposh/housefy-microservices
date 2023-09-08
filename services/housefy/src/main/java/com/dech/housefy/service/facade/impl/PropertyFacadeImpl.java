@@ -1,15 +1,11 @@
 package com.dech.housefy.service.facade.impl;
 
-import com.dech.housefy.domain.Customer;
-import com.dech.housefy.domain.Sale;
 import com.dech.housefy.dto.*;
 import com.dech.housefy.error.DataNotFoundException;
-import com.dech.housefy.error.DuplicateDataException;
 import com.dech.housefy.service.ICustomerService;
 import com.dech.housefy.service.IPropertyService;
 import com.dech.housefy.service.ISaleService;
 import com.dech.housefy.service.facade.IPropertyFacade;
-import com.dech.housefy.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -30,24 +26,24 @@ public class PropertyFacadeImpl implements IPropertyFacade {
     private final Logger logger = LoggerFactory.getLogger(PropertyFacadeImpl.class);
 
     @Override
-    public PropertyInfoDTO getPropertiesInfo(String propertyId) {
+    public List<SubPropertyInfoDTO> getPropertiesInfo(String propertyId) {
         PropertyInfoDTO propertyInfo = modelMapper.map(propertyService.findById(propertyId), PropertyInfoDTO.class);
         List<SaleDTO> saleDTOList = saleService.findAllByPropertyId(propertyId);
-        List<SubPropertyInfoDTO> propertyInfoDTOS = propertyInfo.getSubProperties().stream()
+        return propertyInfo.getSubProperties().stream()
                 .map(subPropertyInfoDTO -> {
                     Optional<SaleDTO> saleOptional = saleDTOList.stream().filter(saleDTO -> saleDTO.getSubPropertyId().equals(subPropertyInfoDTO.getId())).findFirst();
                     if (saleOptional.isPresent()) {
                         subPropertyInfoDTO.setBalance(saleOptional.get().getBalance());
                         subPropertyInfoDTO.setOnAccount(saleOptional.get().getOnAccount());
                         subPropertyInfoDTO.setPropertyId(propertyId);
+                        subPropertyInfoDTO.setIsAvailable(false);
                     }
+                    subPropertyInfoDTO.setIsAvailable(true);
                     return subPropertyInfoDTO;
                 }
         ).collect(Collectors.toList());
-        propertyInfo.setSubProperties(propertyInfoDTOS);
-        propertyInfo.setTotalProperties(propertyInfoDTOS.stream().count());
-        propertyInfo.setPropertiesAvailable(propertyInfoDTOS.stream().filter(subProp -> subProp.getBalance() == null).count());
-        return propertyInfo;
+//        propertyInfo.setTotalProperties(propertyInfoDTOS.stream().count());
+//        propertyInfo.setPropertiesAvailable(propertyInfoDTOS.stream().filter(subProp -> subProp.getBalance() == null).count());
     }
 
     @Override

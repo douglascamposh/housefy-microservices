@@ -77,7 +77,7 @@ public class PropertyController {
 
     @GetMapping(value = "{id}/subproperties")
     @ResponseStatus(HttpStatus.OK)
-    public PropertyInfoDTO getPropertyInfo(@Valid @NotNull @PathVariable("id") String id) {
+    public List<SubPropertyInfoDTO> getPropertyInfo(@Valid @NotNull @PathVariable("id") String id) {
         logger.info("Get sub properties info by propertyId: " + id);
         return propertyFacade.getPropertiesInfo(id);
     }
