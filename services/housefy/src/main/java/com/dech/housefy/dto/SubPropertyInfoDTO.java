@@ -13,4 +13,5 @@ public class SubPropertyInfoDTO {
     private Float balance;
     private String propertyId;
     private CustomerDTO customer;
+    private Boolean isAvailable;
 }
