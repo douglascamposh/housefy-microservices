@@ -1,0 +1,27 @@
+services:
+  mongodb:
+    image: 'mongo:latest'
+    container_name: mongodb
+    restart: always
+    environment:
+      - 'MONGO_INITDB_DATABASE=housefydb'
+      - 'MONGO_INITDB_ROOT_PASSWORD=secret'
+      - 'MONGO_INITDB_ROOT_USERNAME=root'
+    ports:
+      - '27017:27017'
+  tomcat:
+    image: douglascamposh/housefy
+    container_name: housefy
+    depends_on:
+      - mongodb
+    restart: always
+    ports:
+      - 8072:8072
+  nextjs:
+    image: douglascamposh/housefy-next
+    container_name: housefy-next
+    depends_on:
+      - tomcat
+    restart: always
+    ports:
+      - 3000:3000
