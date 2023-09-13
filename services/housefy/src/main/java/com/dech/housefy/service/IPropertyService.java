@@ -14,5 +14,7 @@ public interface IPropertyService {
     PropertyDTO findById(String id);
     PropertyDTO update(PropertyDTO property);
     PropertyDTO addSubProperty(String propertyId, SubPropertyDTO subProperty);
+    PropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subProperty);
+    PropertyDTO deleteSubProperty(String propertyId, String subProperty);
     PropertyDTO findByPropertyIdAndSubPropertyId(String propertyId, String subProperty);
 }

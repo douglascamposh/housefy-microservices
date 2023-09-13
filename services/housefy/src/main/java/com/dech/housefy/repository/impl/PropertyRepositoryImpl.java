@@ -23,13 +23,30 @@ public class PropertyRepositoryImpl implements IPropertyRepositoryImpl {
         Update update = new Update();
         update.push("subProperties", subProperty);
         Query query = new Query(Criteria.where("_id").is(propertyId));
-        mongoTemplate.upsert(query, update, "property");
+        mongoTemplate.upsert(query, update, Property.class);
         return mongoTemplate.findById(propertyId, Property.class);
     }
 
     @Override
+    public Property updateSubProperty(String propertyId, SubProperty subProperty) {
+        Update update = new Update();
+        Query query = new Query(Criteria.where("_id").is(propertyId).and("subProperties.id").is(subProperty.getId()));
+        update.set("subProperties.$", subProperty);
+        mongoTemplate.upsert(query, update, Property.class);
+        return mongoTemplate.findById(propertyId, Property.class);
+    }
+
+    @Override
+    public void deleteSubProperty(String propertyId, String subPropertyId) {
+        Update update = new Update();
+        Query query = new Query(Criteria.where("_id").is(propertyId).and("subProperties.id").is(subPropertyId));
+        update.pull("subProperties", new Query(Criteria.where("_id").is(subPropertyId)));
+        mongoTemplate.upsert(query, update, Property.class);
+    }
+
+    @Override
     public Property findSubPropertyByCode(String code) {
-        //Todo: it shoudl be find by propertyId and code
+        //Todo: it should be find by propertyId and code
         Query findQuery = new Query(Criteria.where("subProperties.code").is(code));
         return mongoTemplate.findOne(findQuery, Property.class);
     }

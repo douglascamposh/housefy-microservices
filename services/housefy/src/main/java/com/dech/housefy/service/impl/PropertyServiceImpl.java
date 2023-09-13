@@ -68,11 +68,31 @@ public class PropertyServiceImpl implements IPropertyService {
         Optional<SubPropertyDTO> subPropertyFound = propertyDTO.getSubProperties().stream()
                 .filter(prop -> prop.getCode() != null && prop.getCode().equals(subPropertyDTO.getCode())).findFirst();
         if (subPropertyFound.isPresent()) {
-            throw new DuplicateDataException("The element with code: " + subPropertyDTO.getCode() + "is already added");
+            throw new DuplicateDataException("The element with code: " + subPropertyDTO.getCode() + " is already added");
         }
         SubProperty subProperty = modelMapper.map(subPropertyDTO, SubProperty.class);
         subProperty.setId(new ObjectId().toString());
         return modelMapper.map(propertyRepositoryImpl.addSubProperty(propertyId, subProperty), PropertyDTO.class);
+    }
+
+    @Override
+    public PropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subProperty) {
+        PropertyDTO propertyDTO = this.findByPropertyIdAndSubPropertyId(propertyId, subProperty.getId());
+        SubPropertyDTO subPropertyFound = propertyDTO.getSubProperties().stream().filter(prop -> prop.getId().equals(subProperty.getId())).findFirst().get();
+        if (!subPropertyFound.getCode().equals(subProperty.getCode())) {
+            List<SubPropertyDTO> subProperties = propertyDTO.getSubProperties().stream().filter(prop -> prop.getCode().equals(subProperty.getCode())).collect(Collectors.toList());
+            if (subProperties.size() > 0) {
+                throw new DuplicateDataException("The element with code: " + subProperty.getCode() + " is already added");
+            }
+        }
+        SubProperty subPropertyToUpdate = modelMapper.map(subProperty, SubProperty.class);
+        return modelMapper.map(propertyRepositoryImpl.updateSubProperty(propertyId, subPropertyToUpdate), PropertyDTO.class);
+    }
+
+    @Override
+    public PropertyDTO deleteSubProperty(String propertyId, String subProperty) {
+        propertyRepositoryImpl.deleteSubProperty(propertyId, subProperty);
+        return this.findById(propertyId);
     }
 
     @Override

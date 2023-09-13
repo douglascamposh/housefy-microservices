@@ -2,6 +2,7 @@ package com.dech.housefy.service.facade.impl;
 
 import com.dech.housefy.dto.*;
 import com.dech.housefy.error.DataNotFoundException;
+import com.dech.housefy.error.InternalErrorException;
 import com.dech.housefy.service.ICustomerService;
 import com.dech.housefy.service.IPropertyService;
 import com.dech.housefy.service.ISaleService;
@@ -63,6 +64,27 @@ public class PropertyFacadeImpl implements IPropertyFacade {
         SoldPropertyFormDTO soldPropertyDTO = saleService.create(soldForm);
         soldPropertyDTO.setCustomer(customerDTO);
         return soldPropertyDTO;
+    }
+
+    @Override
+    public PropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
+        SaleDTO saleDTO = saleService.findByIdSubPropertyId(subPropertyDTO.getId());
+        if (saleDTO != null) {
+            logger.error("SubProperty with  Id: " + subPropertyDTO.getId() + "is already sold. It is not possible update it.");
+            throw new InternalErrorException("SubProperty with  Id: " + subPropertyDTO.getId() + "is already sold. It is not possible update it.");
+
+        }
+        return propertyService.updateSubProperty(propertyId, subPropertyDTO);
+    }
+
+    @Override
+    public void deleteSubProperty(String propertyId, String subPropertyId) {
+        SaleDTO saleDTO = saleService.findByIdSubPropertyId(subPropertyId);
+        if (saleDTO != null) {
+            logger.error("SubProperty with  Id: " + subPropertyId + "is already sold. It is not possible delete it.");
+            throw new InternalErrorException("SubProperty with  Id: " + subPropertyId + "is already sold. It is not possible delete it.");
+        }
+        propertyService.deleteSubProperty(propertyId, subPropertyId);
     }
 
     private SubPropertyDTO getSubPropertyById(String subPropertyId, List<SubPropertyDTO> subPropertyDTOList) {

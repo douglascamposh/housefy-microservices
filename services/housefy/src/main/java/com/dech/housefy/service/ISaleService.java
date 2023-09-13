@@ -10,4 +10,5 @@ import java.util.List;
 public interface ISaleService {
     SoldPropertyFormDTO create(SoldPropertyFormDTO soldPropertyFormDTO);
     List<SaleDTO> findAllByPropertyId(String propertyId);
+    SaleDTO findByIdSubPropertyId(String subPropertyId);
 }

@@ -48,6 +48,12 @@ public class SaleServiceImpl implements ISaleService {
         return saleRepository.findAllByPropertyId(propertyId).stream().map(sale -> modelMapper.map(sale, SaleDTO.class)).collect(Collectors.toList());
     }
 
+    @Override
+    public SaleDTO findByIdSubPropertyId(String subPropertyId) {
+        Optional<Sale> saleFound = saleRepository.findBySubPropertyId(subPropertyId);
+        return saleFound.map(sale -> modelMapper.map(sale, SaleDTO.class)).orElse(null);
+    }
+
     private Float calculateBalance(Float total, Float onAccount) {
         if (onAccount > total) {
             logger.error("OnAccount field should not be greater than total");
