@@ -32,13 +32,14 @@ public class PropertyFacadeImpl implements IPropertyFacade {
         return propertyInfo.getSubProperties().stream()
                 .map(subPropertyInfoDTO -> {
                     Optional<SaleDTO> saleOptional = saleDTOList.stream().filter(saleDTO -> saleDTO.getSubPropertyId().equals(subPropertyInfoDTO.getId())).findFirst();
+                    subPropertyInfoDTO.setPropertyId(propertyId);
                     if (saleOptional.isPresent()) {
                         subPropertyInfoDTO.setBalance(saleOptional.get().getBalance());
                         subPropertyInfoDTO.setOnAccount(saleOptional.get().getOnAccount());
-                        subPropertyInfoDTO.setPropertyId(propertyId);
                         subPropertyInfoDTO.setIsAvailable(false);
+                    } else {
+                        subPropertyInfoDTO.setIsAvailable(true);
                     }
-                    subPropertyInfoDTO.setIsAvailable(true);
                     return subPropertyInfoDTO;
                 }
         ).collect(Collectors.toList());
