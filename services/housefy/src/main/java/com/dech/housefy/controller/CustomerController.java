@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping(CustomerController.BASE_CTRL_URL)
 public class CustomerController {
     public static final String BASE_CTRL_URL = "api/v1/customers";
-    private static final Logger logger = LoggerFactory.getLogger(PropertyController.class);
+    private static final Logger logger = LoggerFactory.getLogger(CustomerController.class);
 
     private final ICustomerService customerService;
 
