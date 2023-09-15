@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -47,5 +49,12 @@ public class CustomerServiceImpl implements ICustomerService {
             return modelMapper.map(customer, CustomerDTO.class);
         }
         throw new DataNotFoundException("Unable to get Customer with Number phone: " + phone);
+    }
+    @Override
+    public List<CustomerDTO> searchUsers(String criteria) {
+        List<Customer> customers = customerRepository.findByNameContainingOrLastNameContainingOrEmailContainingOrPhoneNumberContaining(criteria, criteria, criteria, criteria);
+        return customers.stream()
+            .map(customer -> modelMapper.map(customer, CustomerDTO.class))
+            .collect(Collectors.toList());
     }
 }
