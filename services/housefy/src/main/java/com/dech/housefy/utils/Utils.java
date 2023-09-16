@@ -1,9 +1,11 @@
 package com.dech.housefy.utils;
 
+import java.lang.reflect.Field;
 import java.net.URLDecoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -31,5 +33,19 @@ public class Utils {
     public static LocalDate convertStringToDate(String date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return LocalDate.parse(date, formatter);
+    }
+
+    public static <T> HashMap<String, String> getFields(T dto) {
+        HashMap<String, String> fields = new HashMap<>();
+        for (Field field : dto.getClass().getDeclaredFields()) {
+            try {
+              field.setAccessible(true);
+              if(field.get(dto).toString() != "")
+              fields.put(field.getName(), field.get(dto).toString());
+            } catch (IllegalAccessException e) {
+              e.printStackTrace();
+            }
+        }
+        return fields;
     }
 }

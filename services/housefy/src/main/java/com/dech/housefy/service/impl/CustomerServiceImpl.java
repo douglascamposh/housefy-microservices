@@ -2,15 +2,18 @@ package com.dech.housefy.service.impl;
 
 import com.dech.housefy.domain.Customer;
 import com.dech.housefy.dto.CustomerDTO;
+import com.dech.housefy.dto.SearchRequestDTO;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.DuplicateDataException;
 import com.dech.housefy.repository.ICustomerRepository;
+import com.dech.housefy.repository.ICustomerRepositoryImpl;
 import com.dech.housefy.service.ICustomerService;
 import com.dech.housefy.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerServiceImpl implements ICustomerService {
     private final ICustomerRepository customerRepository;
+    private final ICustomerRepositoryImpl customerRepositoryImpl;
     private final ModelMapper modelMapper;
 
     @Override
@@ -51,8 +55,9 @@ public class CustomerServiceImpl implements ICustomerService {
         throw new DataNotFoundException("Unable to get Customer with Number phone: " + phone);
     }
     @Override
-    public List<CustomerDTO> searchUsers(String criteria) {
-        List<Customer> customers = customerRepository.findByNameContainingOrLastNameContainingOrEmailContainingOrPhoneNumberContaining(criteria, criteria, criteria, criteria);
+    public List<CustomerDTO> searchCustomers(SearchRequestDTO criteria) {
+        HashMap<String, String> fields = Utils.getFields(criteria);
+        List<Customer> customers = fields.isEmpty()? customerRepository.findAll() : customerRepositoryImpl.searchCustomers(fields);
         return customers.stream()
             .map(customer -> modelMapper.map(customer, CustomerDTO.class))
             .collect(Collectors.toList());
