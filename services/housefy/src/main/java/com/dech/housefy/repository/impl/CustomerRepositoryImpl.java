@@ -23,7 +23,7 @@ public class CustomerRepositoryImpl implements ICustomerRepositoryImpl{
     @Override
     public List<Customer> searchCustomers(HashMap<String, String> fields) {
         List<Criteria> criteriaList = fields.entrySet().stream()
-                .map(entry -> Criteria.where(entry.getKey()).regex("^" + Pattern.quote((String) entry.getValue()), "i"))
+                .map(entry -> Criteria.where(entry.getKey()).regex(Pattern.quote((String) entry.getValue()), "i"))
                 .collect(Collectors.toList());
 
         Criteria criteria = new Criteria().orOperator(criteriaList.toArray(new Criteria[0]));
