@@ -26,7 +26,7 @@ public class CustomerController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CustomerDTO> searchCustomers(@ModelAttribute SearchRequestDTO criteria) {
-        logger.info("Show criteria: " + Utils.getFields(criteria));
+        logger.info("Show criteria: " + criteria.toString());
         return customerService.searchCustomers(criteria);
     }
 }
