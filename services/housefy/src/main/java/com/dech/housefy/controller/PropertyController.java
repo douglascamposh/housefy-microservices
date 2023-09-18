@@ -61,7 +61,7 @@ public class PropertyController {
         return s3Service.uploadImageProperties(imageUploadDTO);
     }
 
-    @DeleteMapping(value = "/delete/{imageId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @DeleteMapping(value = "/delete/{imageId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteImageS3(HttpServletRequest request, @NotNull @PathVariable("imageId") String imageId) {
         logger.info("deleting starting... filename {}", imageId);
@@ -70,7 +70,7 @@ public class PropertyController {
 
     @PostMapping(value = "{id}/subproperties")
     @ResponseStatus(HttpStatus.OK)
-    public PropertyDTO addSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody SubPropertyDTO subPropertyDTO){
+    public SubPropertyDTO addSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody SubPropertyDTO subPropertyDTO){
         logger.info("Adding sub property with code: {} to property with Id: {}",subPropertyDTO.getCode(), id);
         return propertyService.addSubProperty(id, subPropertyDTO);
     }
@@ -80,5 +80,23 @@ public class PropertyController {
     public List<SubPropertyInfoDTO> getPropertyInfo(@Valid @NotNull @PathVariable("id") String id) {
         logger.info("Get sub properties info by propertyId: " + id);
         return propertyFacade.getPropertiesInfo(id);
+    }
+
+    @PutMapping(value = "{id}/subproperties/{subId}")
+    @ResponseStatus(HttpStatus.OK)
+    public SubPropertyDTO getPropertyInfo(
+            @Valid @NotNull @PathVariable("id") String id,
+            @Valid @NotNull @PathVariable("subId") String subId,
+            @Valid @RequestBody SubPropertyDTO subPropertyDTO) {
+        logger.info("Update sub property with Id: {} to property with Id: {}", subId, id);
+        subPropertyDTO.setId(subId);
+        return propertyFacade.updateSubProperty(id, subPropertyDTO);
+    }
+
+    @DeleteMapping(value = "{id}/subproperties/{subId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @NotNull @PathVariable("subId") String subId){
+        logger.info("Deleting sub property with Id: {} to property with Id: {}", subId, id);
+        propertyFacade.deleteSubProperty(id, subId);
     }
 }
