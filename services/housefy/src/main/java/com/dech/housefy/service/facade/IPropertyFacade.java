@@ -11,6 +11,6 @@ import java.util.List;
 public interface IPropertyFacade {
     List<SubPropertyInfoDTO> getPropertiesInfo(String propertyId);
     SoldPropertyFormDTO soldProperty(SoldPropertyFormDTO soldPropertyFormDTO);
-    PropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subPropertyDTO);
+    SubPropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subPropertyDTO);
     void deleteSubProperty(String propertyId, String subPropertyId);
 }

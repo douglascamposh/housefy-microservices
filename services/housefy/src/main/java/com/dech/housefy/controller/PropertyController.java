@@ -70,7 +70,7 @@ public class PropertyController {
 
     @PostMapping(value = "{id}/subproperties")
     @ResponseStatus(HttpStatus.OK)
-    public PropertyDTO addSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody SubPropertyDTO subPropertyDTO){
+    public SubPropertyDTO addSubProperty(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody SubPropertyDTO subPropertyDTO){
         logger.info("Adding sub property with code: {} to property with Id: {}",subPropertyDTO.getCode(), id);
         return propertyService.addSubProperty(id, subPropertyDTO);
     }
@@ -84,7 +84,7 @@ public class PropertyController {
 
     @PutMapping(value = "{id}/subproperties/{subId}")
     @ResponseStatus(HttpStatus.OK)
-    public PropertyDTO getPropertyInfo(
+    public SubPropertyDTO getPropertyInfo(
             @Valid @NotNull @PathVariable("id") String id,
             @Valid @NotNull @PathVariable("subId") String subId,
             @Valid @RequestBody SubPropertyDTO subPropertyDTO) {

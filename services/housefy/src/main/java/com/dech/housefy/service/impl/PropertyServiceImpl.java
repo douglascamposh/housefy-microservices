@@ -63,7 +63,7 @@ public class PropertyServiceImpl implements IPropertyService {
     }
 
     @Override
-    public PropertyDTO addSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
+    public SubPropertyDTO addSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
         PropertyDTO propertyDTO = this.findById(propertyId);
         Optional<SubPropertyDTO> subPropertyFound = propertyDTO.getSubProperties().stream()
                 .filter(prop -> prop.getCode() != null && prop.getCode().equals(subPropertyDTO.getCode())).findFirst();
@@ -72,11 +72,12 @@ public class PropertyServiceImpl implements IPropertyService {
         }
         SubProperty subProperty = modelMapper.map(subPropertyDTO, SubProperty.class);
         subProperty.setId(new ObjectId().toString());
-        return modelMapper.map(propertyRepositoryImpl.addSubProperty(propertyId, subProperty), PropertyDTO.class);
+        propertyRepositoryImpl.addSubProperty(propertyId, subProperty);
+        return modelMapper.map(subProperty, SubPropertyDTO.class);
     }
 
     @Override
-    public PropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subProperty) {
+    public SubPropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subProperty) {
         PropertyDTO propertyDTO = this.findByPropertyIdAndSubPropertyId(propertyId, subProperty.getId());
         SubPropertyDTO subPropertyFound = propertyDTO.getSubProperties().stream().filter(prop -> prop.getId().equals(subProperty.getId())).findFirst().get();
         if (!subPropertyFound.getCode().equals(subProperty.getCode())) {
@@ -86,7 +87,8 @@ public class PropertyServiceImpl implements IPropertyService {
             }
         }
         SubProperty subPropertyToUpdate = modelMapper.map(subProperty, SubProperty.class);
-        return modelMapper.map(propertyRepositoryImpl.updateSubProperty(propertyId, subPropertyToUpdate), PropertyDTO.class);
+        propertyRepositoryImpl.updateSubProperty(propertyId, subPropertyToUpdate);
+        return modelMapper.map(subPropertyToUpdate, SubPropertyDTO.class);
     }
 
     @Override

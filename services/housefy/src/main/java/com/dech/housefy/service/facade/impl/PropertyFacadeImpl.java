@@ -67,7 +67,7 @@ public class PropertyFacadeImpl implements IPropertyFacade {
     }
 
     @Override
-    public PropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
+    public SubPropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subPropertyDTO) {
         SaleDTO saleDTO = saleService.findByIdSubPropertyId(subPropertyDTO.getId());
         if (saleDTO != null) {
             logger.error("SubProperty with  Id: " + subPropertyDTO.getId() + "is already sold. It is not possible update it.");
