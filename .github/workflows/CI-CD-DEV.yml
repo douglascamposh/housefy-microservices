@@ -12,7 +12,8 @@ on:
   push:
     branches: [ "master", "develop" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
+  
   workflow_dispatch:
     inputs:
       targetEnv:
@@ -22,9 +23,10 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged || github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+      packages: write
     name: Docker Build Image
     steps:
     - uses: actions/checkout@v3
@@ -35,7 +37,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Login to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
@@ -55,13 +57,18 @@ jobs:
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      run: mvn -B package --file services/housefy/pom.xml
+      run: mvn -B --file services/housefy/pom.xml clean package -Dspring.profiles.active=docker
     #-------------------------- Build Docker images and push -------------------
-    - name: Build and push docker images
-      run: |
-        echo "Starting build tag and push"
-        docker build --platform linux/amd64  -t douglascamposh/housefy -f ./services/housefy/Dockerfile ./services/housefy
-        echo "Pushing image"
-        docker push douglascamposh/housefy
-
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Build and push docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: ./services/housefy/
+        platforms: linux/amd64,linux/arm64
+        tags: douglascamposh/housefy
+        secrets: |
+          "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
+          "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
+        push: true
 

@@ -5,7 +5,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -28,6 +27,12 @@ public class ApplicationConfig {
     @Bean
     public S3Client s3Client() {
         log.info("***********************AWS S3*************************");
+        if (accessKeyId.equals(null) || accessKeyId.equals("")) {
+            log.error("accessKeyId is null");
+        }
+        for (String s : accessKeyId.split("")) {
+            log.info("{}", s);
+        }
         log.info("accessKeyId: {}", accessKeyId);
         log.info("secretKey: {}", secretKey);
         log.info("Region: {}", region);
