@@ -53,5 +53,7 @@ public class PropertyDTO {
     @Positive
     private Long propertiesAvailable;
 
+    private List<String> services = new ArrayList<>();
+
     private List<SubPropertyDTO> subProperties = new ArrayList<>();
 }
