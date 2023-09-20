@@ -1,5 +1,6 @@
 package com.dech.housefy.service.facade.impl;
 
+import com.dech.housefy.domain.Image;
 import com.dech.housefy.dto.*;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.InternalErrorException;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,6 +77,25 @@ public class PropertyFacadeImpl implements IPropertyFacade {
 
         }
         return propertyService.updateSubProperty(propertyId, subPropertyDTO);
+    }
+
+    @Override
+    public PropertyDTO updateProperty(PropertyDTO propertyDTO) {
+        Image imageSvg = propertyDTO.getImagePlan();
+        if (imageSvg != null && imageSvg.getId() != null) {
+            PropertyDTO propertyFound = propertyService.findById(propertyDTO.getId());
+            Image imagePlanFound = propertyFound.getImagePlan();
+            if (imagePlanFound != null && !imageSvg.getId().equals(imagePlanFound.getId())) {
+                List<SaleDTO> saleDTO = saleService.findAllByPropertyId(propertyDTO.getId());
+                if (saleDTO.size() != 0) {
+                    throw new InternalErrorException("Some SubProperties belong to Property with Id: " + propertyDTO.getId() + "are already sold. It is not possible update it.");
+                } else {
+                    logger.warn("Update the svg will remove the SubProperties are already created");
+                    propertyDTO.setSubProperties(new ArrayList<>());
+                }
+            }
+        }
+        return propertyService.update(propertyDTO);
     }
 
     @Override

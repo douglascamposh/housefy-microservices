@@ -12,5 +12,6 @@ public interface IPropertyFacade {
     List<SubPropertyInfoDTO> getPropertiesInfo(String propertyId);
     SoldPropertyFormDTO soldProperty(SoldPropertyFormDTO soldPropertyFormDTO);
     SubPropertyDTO updateSubProperty(String propertyId, SubPropertyDTO subPropertyDTO);
+    PropertyDTO updateProperty(PropertyDTO propertyDTO);
     void deleteSubProperty(String propertyId, String subPropertyId);
 }
