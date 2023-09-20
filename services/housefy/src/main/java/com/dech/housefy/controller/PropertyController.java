@@ -51,7 +51,7 @@ public class PropertyController {
     @ResponseStatus(HttpStatus.OK)
     public PropertyDTO update(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody PropertyDTO property) {
         property.setId(id);
-        return propertyService.update(property);
+        return propertyFacade.updateProperty(property);
     }
 
     @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
