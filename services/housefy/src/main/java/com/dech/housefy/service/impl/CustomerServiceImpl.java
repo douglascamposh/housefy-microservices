@@ -40,8 +40,6 @@ public class CustomerServiceImpl implements ICustomerService {
             references.forEach(reference -> reference.setId(new ObjectId().toString()));
             customerDTO.setReferences(references);
             Customer customerToSave = modelMapper.map(customerDTO, Customer.class);
-            //Todo remove the birthDate for customer
-            customerToSave.setBirthDate(Utils.convertStringToDate(customerDTO.getBirthDate()));
             return modelMapper.map(customerRepository.save(customerToSave), CustomerDTO.class);
         }
         throw new DuplicateDataException("There is a customer created with the same number phone: " + customerDTO.getPhoneNumber());

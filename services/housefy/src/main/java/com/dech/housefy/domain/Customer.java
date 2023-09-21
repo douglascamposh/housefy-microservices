@@ -1,5 +1,6 @@
 package com.dech.housefy.domain;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,6 +15,10 @@ import java.util.List;
 @Data
 @Document(collection = "customer")
 public class Customer extends BaseUser {
+    @NotBlank
+    private Long ci;
+    private String extensionCi;
+    private BaseAddress address;
     private List<UserReference> references = new ArrayList<>();
     @CreatedDate
     private LocalDateTime createdDate;

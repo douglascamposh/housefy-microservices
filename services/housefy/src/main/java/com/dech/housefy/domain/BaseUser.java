@@ -20,10 +20,7 @@ public class BaseUser {
     @NotBlank
     private String lastName;
     @NotBlank
-    String email;
-    @NotBlank
     private String phoneNumber;
-    private LocalDate birthDate;
 //    @CreatedDate
 //    private LocalDateTime createdDate;
 

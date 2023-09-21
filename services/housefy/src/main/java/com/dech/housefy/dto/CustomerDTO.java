@@ -1,5 +1,6 @@
 package com.dech.housefy.dto;
 
+import com.dech.housefy.domain.BaseAddress;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,10 +17,11 @@ public class CustomerDTO {
     private String name;
     @NotBlank
     private String lastName;
-    private String email;
     @NotBlank
     private String phoneNumber;
-    @NotNull
-    private String birthDate;
+    @NotBlank
+    private Long ci;
+    private String extensionCi;
+    private BaseAddress address;
     private List<UserReferenceDTO> references = new ArrayList<>();
 }
