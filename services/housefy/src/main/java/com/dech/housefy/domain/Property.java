@@ -43,4 +43,6 @@ public class Property {
     @Builder.Default
     private List<SubProperty> subProperties = Collections.emptyList();
 
+    private List<String> services = new ArrayList<>();
+
 }

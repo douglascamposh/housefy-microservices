@@ -25,5 +25,7 @@ public class PropertyInfoDTO {
     @Positive
     private Long propertiesAvailable;
 
+    private List<String> services = new ArrayList<>();
+
     private List<SubPropertyInfoDTO> subProperties = new ArrayList<>();
 }

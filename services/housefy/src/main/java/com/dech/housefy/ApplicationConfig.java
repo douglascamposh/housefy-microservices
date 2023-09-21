@@ -30,9 +30,6 @@ public class ApplicationConfig {
         if (accessKeyId.equals(null) || accessKeyId.equals("")) {
             log.error("accessKeyId is null");
         }
-        for (String s : accessKeyId.split("")) {
-            log.info("{}", s);
-        }
         log.info("accessKeyId: {}", accessKeyId);
         log.info("secretKey: {}", secretKey);
         log.info("Region: {}", region);
