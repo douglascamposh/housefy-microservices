@@ -3,13 +3,16 @@ package com.dech.housefy.service.impl;
 import com.dech.housefy.domain.Customer;
 import com.dech.housefy.dto.CustomerDTO;
 import com.dech.housefy.dto.SearchRequestDTO;
+import com.dech.housefy.dto.UserReferenceDTO;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.DuplicateDataException;
+import com.dech.housefy.error.InternalErrorException;
 import com.dech.housefy.repository.ICustomerRepository;
 import com.dech.housefy.repository.ICustomerRepositoryImpl;
 import com.dech.housefy.service.ICustomerService;
 import com.dech.housefy.utils.Utils;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +33,14 @@ public class CustomerServiceImpl implements ICustomerService {
         customerDTO.setId(null);
         Customer customer = customerRepository.findByPhoneNumber(customerDTO.getPhoneNumber());
         if (customer == null) {
+            List<UserReferenceDTO> references = customerDTO.getReferences();
+            if (references.size() == 0) {
+                throw new InternalErrorException("The customer must have at least one reference");
+            }
+            references.forEach(reference -> reference.setId(new ObjectId().toString()));
+            customerDTO.setReferences(references);
             Customer customerToSave = modelMapper.map(customerDTO, Customer.class);
+            //Todo remove the birthDate for customer
             customerToSave.setBirthDate(Utils.convertStringToDate(customerDTO.getBirthDate()));
             return modelMapper.map(customerRepository.save(customerToSave), CustomerDTO.class);
         }
