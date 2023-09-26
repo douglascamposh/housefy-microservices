@@ -17,7 +17,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -42,7 +44,9 @@ public class UserServiceImpl implements IUserService {
             throw new InternalErrorException("User with email: " + signupRequest.getEmail() + " already exists");
         }
         User user = modelMapper.map(signupRequest, User.class);
-        user.setRole(Role.USER.toString());//Todo: chan ge to List of roles
+        Set<String> roles = new HashSet<String>();
+        roles.add(Role.ROLE_USER.toString());
+        user.setRoles(roles);
         user.setPassword(passworEncoder.encode(signupRequest.getPassword()));
         userRepository.save(user);
         String jwt = jwtService.generateToken(user);
