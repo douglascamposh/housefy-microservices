@@ -118,17 +118,17 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 //        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 //    }
 
-//    @ExceptionHandler(value = { InternalErrorException.class })
-//    public ResponseEntity handleInternalErrorExceptions(
-//            RuntimeException ex, WebRequest request) {
-//        ErrorResponse error = new ErrorResponse(
-//                new Date(),
-//                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-//                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-//                ex.getMessage(),
-//                appName,
-//                request.getDescription(false)
-//        );
-//        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
+    @ExceptionHandler(value = { InternalErrorException.class })
+    public ResponseEntity handleInternalErrorExceptions(
+            RuntimeException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                new Date(),
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                ex.getMessage(),
+                appName,
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
