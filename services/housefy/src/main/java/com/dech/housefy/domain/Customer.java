@@ -16,7 +16,7 @@ import java.util.List;
 @Document(collection = "customer")
 public class Customer extends BaseUser {
     @NotBlank
-    private Long ci;
+    private String ci;
     private String extensionCi;
     private BaseAddress address;
     private List<UserReference> references = new ArrayList<>();

@@ -20,7 +20,7 @@ public class CustomerDTO {
     @NotBlank
     private String phoneNumber;
     @NotBlank
-    private Long ci;
+    private String ci;
     private String extensionCi;
     private BaseAddress address;
     private List<UserReferenceDTO> references = new ArrayList<>();
