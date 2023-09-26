@@ -50,6 +50,7 @@ public class PropertyController {
     @PutMapping(value = "/{id}", produces = {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public PropertyDTO update(@Valid @NotNull @PathVariable("id") String id, @Valid @RequestBody PropertyDTO property) {
+        //Todo modify the update property dto, it should not possible to update properties from here, neither the ownerId, remove totalProperties
         property.setId(id);
         return propertyFacade.updateProperty(property);
     }
