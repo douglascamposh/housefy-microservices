@@ -29,5 +29,6 @@ public class PropertyFormDTO {
     private List<Image> images = new ArrayList<>();
 
     private Image imagePlan;
+    private List<String> services = new ArrayList<>();
 
 }
