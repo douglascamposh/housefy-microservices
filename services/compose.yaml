@@ -12,6 +12,8 @@ services:
   tomcat:
     image: douglascamposh/housefy
     container_name: housefy
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
     depends_on:
       - mongodb
     restart: always
