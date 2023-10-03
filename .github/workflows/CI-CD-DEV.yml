@@ -53,10 +53,12 @@ jobs:
     #-------------------------- Build -------------------
     - name: Check TARGET ENV  param
       run: echo "${{ env.TARGET_ENV }}"
+    - name: Modify env variable AWS
+      run: |
+        sed -i 's/aws.access_key_id=${AWS_ACCESS_KEY_ID}/aws.access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}/' services/housefy/src/main/resources/application-docker.properties &&
+        sed -i 's/aws.secret_access_key=${AWS_SECRET_ACCESS_KEY}/aws.secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}/' services/housefy/src/main/resources/application-docker.properties &&
+        cat services/housefy/src/main/resources/application-docker.properties
     - name: Build with Maven
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: mvn -B --file services/housefy/pom.xml clean package -Dspring.profiles.active=docker
     #-------------------------- Build Docker images and push -------------------
     - name: Set up Docker Buildx
@@ -67,8 +69,5 @@ jobs:
         context: ./services/housefy/
         platforms: linux/amd64,linux/arm64
         tags: douglascamposh/housefy
-        secrets: |
-          "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
-          "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         push: true
 
