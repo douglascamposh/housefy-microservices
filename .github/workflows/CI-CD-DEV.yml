@@ -67,5 +67,8 @@ jobs:
         context: ./services/housefy/
         platforms: linux/amd64,linux/arm64
         tags: douglascamposh/housefy
+        secrets: |
+          "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}"
+          "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}"
         push: true
 
