@@ -1,6 +1,7 @@
 package com.dech.housefy.domain;
 
-import com.dech.housefy.enums.Role;
+import com.dech.housefy.enums.PermissionEnums;
+import com.dech.housefy.enums.RoleEnums;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,6 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -23,13 +23,13 @@ public class User extends BaseUser implements UserDetails {
     private LocalDate birthDate;
     private String password;
 
-    private Set<String> roles;
+    private List<String> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String roleName : roles) {
-            authorities.add(new SimpleGrantedAuthority(Role.valueOf(roleName).name()));
+        for (String roleName: roles) {
+            authorities.add(new SimpleGrantedAuthority(RoleEnums.valueOf(roleName).name()));
         }
         return authorities;
     }

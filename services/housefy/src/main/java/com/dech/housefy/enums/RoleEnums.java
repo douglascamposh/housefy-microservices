@@ -1,6 +1,6 @@
 package com.dech.housefy.enums;
 
-public enum Role {
+public enum RoleEnums {
     ROLE_USER,
     ROLE_ADMIN,
     ROLE_SALE

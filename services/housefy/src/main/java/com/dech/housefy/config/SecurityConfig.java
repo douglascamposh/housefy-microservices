@@ -1,6 +1,8 @@
 package com.dech.housefy.config;
 
 import com.dech.housefy.security.JwtAuthenticationFilter;
+import com.dech.housefy.security.AccessFilter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AccessFilter accessFilter;
     private final AuthenticationProvider authenticationProvider;
 
     private static final String[] WHITE_LIST_URLS = {
@@ -33,7 +36,7 @@ public class SecurityConfig {
         "/api/v1/properties/*",
         "/api/v1/properties/**",
         "/api/v1/sales",
-        "/api/v1/customers",
+        "/api/v1/customers"
     };
 
     @Bean
@@ -45,8 +48,8 @@ public class SecurityConfig {
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(accessFilter, JwtAuthenticationFilter.class);
 //        http.cors();
 
         return http.build();
