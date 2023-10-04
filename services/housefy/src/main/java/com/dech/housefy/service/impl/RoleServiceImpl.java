@@ -6,8 +6,10 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import com.dech.housefy.domain.RoleDomain;
+import com.dech.housefy.domain.Role;
+import com.dech.housefy.dto.RoleCreateDTO;
 import com.dech.housefy.dto.RoleDTO;
+import com.dech.housefy.error.DuplicateDataException;
 import com.dech.housefy.repository.IRoleRepository;
 import com.dech.housefy.service.IRoleService;
 
@@ -21,7 +23,7 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleDTO getRole(String rolName) {
-        RoleDomain role= roleRepository.findRoleByRoleName(rolName);
+        Role role= roleRepository.findRoleByRoleName(rolName);
         return modelMapper.map(role, RoleDTO.class);
     }
 
@@ -31,16 +33,20 @@ public class RoleServiceImpl implements IRoleService {
     }
 
     @Override
-    public RoleDTO save(RoleDTO roleDTO) {
-        RoleDomain property = modelMapper.map(roleDTO, RoleDomain.class);
-        RoleDomain newRole = roleRepository.save(property);
-        return modelMapper.map(newRole, RoleDTO.class);
+    public RoleDTO save(RoleCreateDTO roleCreateDTO) {
+        Role existingRole = roleRepository.findRoleByRoleName(roleCreateDTO.getRoleName());
+        if(existingRole == null){
+            Role role = modelMapper.map(roleCreateDTO, Role.class);
+            Role newRole = roleRepository.save(role);
+            return modelMapper.map(newRole, RoleDTO.class);
+        }
+        throw new DuplicateDataException("A role with this name already exists." + roleCreateDTO.getRoleName());
     }
 
     @Override
-    public RoleDTO update(RoleDTO role) {
-        roleRepository.findById(role.getId());
-        RoleDomain roleToUpdate = modelMapper.map(role, RoleDomain.class);
+    public RoleDTO update(RoleDTO roleDTO) {
+        roleRepository.findById(roleDTO.getId());
+        Role roleToUpdate = modelMapper.map(roleDTO, Role.class);
         return modelMapper.map(roleRepository.save(roleToUpdate), RoleDTO.class);
     }
 

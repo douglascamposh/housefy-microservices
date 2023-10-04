@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Document(collection = "role")
-public class RoleDomain {
+public class Role {
     @Id
     private String id;
     private String roleName;

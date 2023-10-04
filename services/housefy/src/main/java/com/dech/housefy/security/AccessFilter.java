@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.dech.housefy.dto.RoleDTO;
+import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.service.IJwtService;
 import com.dech.housefy.service.IRoleService;
 
@@ -52,9 +53,7 @@ public class AccessFilter extends OncePerRequestFilter {
 
         boolean hasAccess = checkAccess(roles, pageRequest, methodRequest);
         if(!hasAccess){
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("Access denied");
-            return;
+            throw new DataNotFoundException("User does not have access.");
         }
 
         filterChain.doFilter(request, response);

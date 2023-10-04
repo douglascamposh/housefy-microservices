@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.dech.housefy.dto.RoleCreateDTO;
 import com.dech.housefy.dto.RoleDTO;
 import com.dech.housefy.service.IRoleService;
 
@@ -44,7 +45,7 @@ public class RoleController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.OK)
-    public RoleDTO save(@Valid @RequestBody RoleDTO role) {
+    public RoleDTO save(@RequestBody RoleCreateDTO role) {
         return roleService.save(role);
     }
     
@@ -59,7 +60,7 @@ public class RoleController {
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@Valid @NotNull @PathVariable("id") String id){
-        logger.info(id);
+        logger.info("the role with " + id + " id,  is deleted");
         roleService.delete(id);
     }
 }

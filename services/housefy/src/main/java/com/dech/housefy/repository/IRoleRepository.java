@@ -1,9 +1,9 @@
 package com.dech.housefy.repository;
 
-import com.dech.housefy.domain.RoleDomain;
+import com.dech.housefy.domain.Role;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface IRoleRepository extends MongoRepository<RoleDomain, String>{
-    RoleDomain findRoleByRoleName(String roleName);
+public interface IRoleRepository extends MongoRepository<Role, String>{
+    Role findRoleByRoleName(String roleName);
 }
