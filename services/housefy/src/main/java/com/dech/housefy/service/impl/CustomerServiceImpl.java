@@ -63,8 +63,12 @@ public class CustomerServiceImpl implements ICustomerService {
         throw new DataNotFoundException("Unable to get Customer with Number phone: " + phone);
     }
     @Override
-    public List<CustomerDTO> searchCustomers(SearchRequestDTO criteria) {
-        HashMap<String, String> fields = Utils.getFields(criteria);
+    public List<CustomerDTO> searchCustomers(String criteria) {
+        SearchRequestDTO searchRequest = new SearchRequestDTO();
+        searchRequest.setName(criteria);
+        searchRequest.setLastName(criteria);
+        searchRequest.setPhoneNumber(criteria);
+        HashMap<String, String> fields = Utils.getFields(searchRequest);
         List<Customer> customers = fields.isEmpty()? customerRepository.findAll() : customerRepositoryImpl.searchCustomers(fields);
         return customers.stream()
             .map(customer -> modelMapper.map(customer, CustomerDTO.class))

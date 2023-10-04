@@ -9,5 +9,5 @@ public interface ICustomerService {
     CustomerDTO createCustomer(CustomerDTO customerDTO);
     CustomerDTO findById(String customerId);
     CustomerDTO findByNumberPhone(String phone);
-    List<CustomerDTO> searchCustomers(SearchRequestDTO criteria);
+    List<CustomerDTO> searchCustomers(String criteria);
 }
