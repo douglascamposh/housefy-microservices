@@ -14,4 +14,6 @@ public class SoldPropertyFormDTO {
     @NotBlank
     private String propertyId;
     private CustomerDTO customer;
+    @NotBlank
+    private String status;
 }

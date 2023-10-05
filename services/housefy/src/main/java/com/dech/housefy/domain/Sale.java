@@ -24,4 +24,7 @@ public class Sale {
     private String propertyId;
     @NotBlank
     private String customerId;
+    private String status;
+    private Long createdAt;
+    private Long reservationExpiresDate;
 }

@@ -1,11 +1,16 @@
 package com.dech.housefy.service.impl;
 
+import com.dech.housefy.constants.Constants;
+import com.dech.housefy.domain.AdminParam;
 import com.dech.housefy.domain.Customer;
 import com.dech.housefy.domain.Sale;
 import com.dech.housefy.dto.CustomerDTO;
 import com.dech.housefy.dto.SaleDTO;
 import com.dech.housefy.dto.SoldPropertyFormDTO;
+import com.dech.housefy.enums.StateSales;
 import com.dech.housefy.error.DuplicateDataException;
+import com.dech.housefy.error.InternalErrorException;
+import com.dech.housefy.repository.IAdminParamRepository;
 import com.dech.housefy.repository.ICustomerRepository;
 import com.dech.housefy.repository.ISaleRepository;
 import com.dech.housefy.service.ISaleService;
@@ -24,11 +29,15 @@ import java.util.stream.Collectors;
 @Service
 public class SaleServiceImpl implements ISaleService {
     private final ISaleRepository saleRepository;
+    private final IAdminParamRepository adminParamRepository;
     private final ModelMapper modelMapper;
     private static final Logger logger = LoggerFactory.getLogger(SaleServiceImpl.class);
 
     @Override
     public SoldPropertyFormDTO create(SoldPropertyFormDTO soldForm) {
+        if (soldForm.getStatus() != StateSales.SOLD.name() || soldForm.getStatus() != StateSales.RESERVED.name()) {
+            throw new InternalErrorException("Status should be SOLD or RESERVED");
+        }
         Optional<Sale> saleFound = saleRepository.findBySubPropertyId(soldForm.getSubPropertyId());
         if (saleFound.isPresent()) {
             logger.error("It could not save Sale with Sub property Id: " + soldForm.getSubPropertyId() + " because it was created before.");
@@ -38,6 +47,11 @@ public class SaleServiceImpl implements ISaleService {
         sale.setId(null);
         sale.setCustomerId(soldForm.getCustomer().getId());
         sale.setBalance(calculateBalance(soldForm.getTotal(), soldForm.getOnAccount()));
+        sale.setCreatedAt(Utils.getCurrentDate());
+        if (sale.getStatus() == StateSales.RESERVED.name()) {
+            Long expirationDate = Utils.getValueFromParams(adminParamRepository.findByKey(Constants.EXPIRATION_DATE_SALES), Constants.EXPIRATION_DATE_SALES, Constants.DEFAULT_EXPIRATION_DATE_SALES);
+            sale.setReservationExpiresDate(expirationDate);
+        }
         Sale newSale = saleRepository.save(sale);
         logger.info("Sale created with Sub Property Id: " + newSale.getSubPropertyId());
         return modelMapper.map(newSale, SoldPropertyFormDTO.class);
