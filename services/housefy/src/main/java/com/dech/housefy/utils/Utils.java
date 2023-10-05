@@ -6,7 +6,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Optional;
+import java.util.function.Function;
 
+import com.dech.housefy.domain.AdminParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 
@@ -47,5 +50,17 @@ public class Utils {
             }
         }
         return fields;
+    }
+    public static Long getCurrentDate() {
+        return LocalDateTime.now().toInstant(java.time.ZoneOffset.UTC).toEpochMilli()/1000;
+    }
+
+    public static Long addDaysToDate(Long days) {
+        return LocalDateTime.now().plusDays(days).toInstant(java.time.ZoneOffset.UTC).toEpochMilli()/1000;
+    }
+
+    public static Long getValueFromParams(Optional<AdminParam> adminParam, String key, String defaultValue) {
+        AdminParam param = adminParam.orElse(AdminParam.builder().paramKey(key).paramValue(defaultValue).build());
+        return Long.parseLong(param.getParamValue());
     }
 }
