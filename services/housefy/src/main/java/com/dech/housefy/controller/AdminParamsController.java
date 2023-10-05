@@ -31,6 +31,7 @@ public class AdminParamsController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public AdminParam save(@Valid @RequestBody AdminParamFormDTO adminParam) {
-        adminParamsService.save(adminParam);
+        logger.info("Saving admin param with key name: " + adminParam.getParamKey());
+        return adminParamsService.saveOrUpdate(adminParam);
     }
 }

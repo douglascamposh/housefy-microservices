@@ -8,7 +8,10 @@ import com.dech.housefy.repository.IAdminParamRepository;
 import com.dech.housefy.service.IAdminParamsService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +23,7 @@ public class AdminParamServiceImpl implements IAdminParamsService {
 
     private final IAdminParamRepository adminParamRepository;
     private final ModelMapper modelMapper;
+    private static final Logger logger = LoggerFactory.getLogger(AdminParamServiceImpl.class);
     @Override
     public List<AdminParam> findAll() {
         return adminParamRepository.findAll();
@@ -31,12 +35,16 @@ public class AdminParamServiceImpl implements IAdminParamsService {
     }
 
     @Override
-    public AdminParam save(AdminParamFormDTO adminParam) {
+    public AdminParam saveOrUpdate(AdminParamFormDTO adminParam) {
+        AdminParam param = modelMapper.map(adminParam, AdminParam.class);
         Optional<AdminParam> optionalAdminParam = adminParamRepository.findByKey(adminParam.getParamKey());
         if (!optionalAdminParam.isPresent()) {
-            throw new DuplicateDataException("The value: " + adminParam.getParamKey() + "already exist.");
+            logger.info("create admin param");
+            param.setId(new ObjectId().toString());
+        } else {
+            logger.info("update admin param");
+            param.setId(optionalAdminParam.get().getId());
         }
-        AdminParam param = modelMapper.map(adminParam, AdminParam.class);
         return adminParamRepository.save(param);
     }
 }

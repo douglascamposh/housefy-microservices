@@ -9,5 +9,5 @@ import java.util.List;
 public interface IAdminParamsService {
     List<AdminParam> findAll();
     AdminParam findByKeyName(String keyName);
-    AdminParam save(AdminParamFormDTO adminParam);
+    AdminParam saveOrUpdate(AdminParamFormDTO adminParam);
 }

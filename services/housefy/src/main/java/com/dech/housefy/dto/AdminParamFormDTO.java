@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class AdminParamFormDTO {
+    private String id;
     @NotBlank
     private String paramKey;
     @NotBlank
