@@ -2,7 +2,6 @@ package com.dech.housefy.security;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.regex.Pattern;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -70,9 +69,8 @@ public class AccessFilter extends OncePerRequestFilter {
         if (roleDto != null) {
             return roleDto.getPermissions().stream()
                 .anyMatch(permission -> {
-                    String regex = "^" + Pattern.quote(permission.getPage()) + "(?:/.*)?$";
-                    Pattern pattern = Pattern.compile(regex);
-                    return pattern.matcher(pageRequest).matches() && permission.getMethods().contains(methodRequest);}
+                    String page = permission.getPage();
+                    return pageRequest.startsWith(page) && permission.getMethods().contains(methodRequest);}
                 );
         }
         return false;
