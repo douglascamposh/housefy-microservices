@@ -36,7 +36,9 @@ public class SecurityConfig {
         "/api/v1/properties/*",
         "/api/v1/properties/**",
         "/api/v1/sales",
-        "/api/v1/customers"
+        "/api/v1/customers",
+        "/api/v1/config",
+        "/api/v1/config/*"
     };
 
     @Bean

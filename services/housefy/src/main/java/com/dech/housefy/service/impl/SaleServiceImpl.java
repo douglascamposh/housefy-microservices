@@ -49,7 +49,7 @@ public class SaleServiceImpl implements ISaleService {
         sale.setBalance(calculateBalance(soldForm.getTotal(), soldForm.getOnAccount()));
         sale.setCreatedAt(Utils.getCurrentDate());
         if (sale.getStatus() == StateSales.RESERVED.name()) {
-            Long expirationDate = Utils.getValueFromParams(adminParamRepository.findByKey(Constants.EXPIRATION_DATE_SALES), Constants.EXPIRATION_DATE_SALES, Constants.DEFAULT_EXPIRATION_DATE_SALES);
+            Long expirationDate = Utils.getValueFromParams(adminParamRepository.findAdminParamByParamKey(Constants.EXPIRATION_DATE_SALES), Constants.EXPIRATION_DATE_SALES, Constants.DEFAULT_EXPIRATION_DATE_SALES);
             sale.setReservationExpiresDate(expirationDate);
         }
         Sale newSale = saleRepository.save(sale);
