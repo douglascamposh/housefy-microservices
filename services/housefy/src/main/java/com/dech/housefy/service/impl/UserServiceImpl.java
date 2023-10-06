@@ -5,7 +5,7 @@ import com.dech.housefy.dto.JwtAuthResponse;
 import com.dech.housefy.dto.SigninRequest;
 import com.dech.housefy.dto.SignupRequest;
 import com.dech.housefy.dto.UserDTO;
-import com.dech.housefy.enums.Role;
+import com.dech.housefy.enums.RoleEnums;
 import com.dech.housefy.error.DataNotFoundException;
 import com.dech.housefy.error.InternalErrorException;
 import com.dech.housefy.repository.IUserRepository;
@@ -17,6 +17,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -42,7 +44,9 @@ public class UserServiceImpl implements IUserService {
             throw new InternalErrorException("User with email: " + signupRequest.getEmail() + " already exists");
         }
         User user = modelMapper.map(signupRequest, User.class);
-        user.setRole(Role.USER.toString());//Todo: chan ge to List of roles
+        List<String> roles = new ArrayList<String>();
+        roles.add(RoleEnums.ROLE_USER.toString());
+        user.setRoles(roles);
         user.setPassword(passworEncoder.encode(signupRequest.getPassword()));
         userRepository.save(user);
         String jwt = jwtService.generateToken(user);

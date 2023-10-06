@@ -1,6 +1,7 @@
 package com.dech.housefy.domain;
 
-import com.dech.housefy.enums.Role;
+import com.dech.housefy.enums.PermissionEnums;
+import com.dech.housefy.enums.RoleEnums;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -21,10 +23,15 @@ public class User extends BaseUser implements UserDetails {
     private LocalDate birthDate;
     private String password;
 
-    private String role;
+    private List<String> roles;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(Role.valueOf(role).name()));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String roleName: roles) {
+            authorities.add(new SimpleGrantedAuthority(RoleEnums.valueOf(roleName).name()));
+        }
+        return authorities;
     }
 
     @Override
