@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping(AdminParamsController.BASE_CTRL_URL)
 public class AdminParamsController {
 
-    public static final String BASE_CTRL_URL = "api/v1/adminConfig";
+    public static final String BASE_CTRL_URL = "api/v1/config";
     private static final Logger logger = LoggerFactory.getLogger(AdminParamsController.class);
     private final IAdminParamsService adminParamsService;
     @GetMapping

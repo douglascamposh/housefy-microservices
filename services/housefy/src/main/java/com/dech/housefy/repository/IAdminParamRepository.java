@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface IAdminParamRepository extends MongoRepository<AdminParam, String> {
-    Optional<AdminParam> findByKey(String key);
+    Optional<AdminParam> findAdminParamByParamKey(String key);
 }

@@ -31,13 +31,13 @@ public class AdminParamServiceImpl implements IAdminParamsService {
 
     @Override
     public AdminParam findByKeyName(String keyName) {
-        return adminParamRepository.findByKey(keyName).orElseThrow(() -> new DataNotFoundException("The param with name: " + keyName + "was not found"));
+        return adminParamRepository.findAdminParamByParamKey(keyName).orElseThrow(() -> new DataNotFoundException("The param with name: " + keyName + "was not found"));
     }
 
     @Override
     public AdminParam saveOrUpdate(AdminParamFormDTO adminParam) {
         AdminParam param = modelMapper.map(adminParam, AdminParam.class);
-        Optional<AdminParam> optionalAdminParam = adminParamRepository.findByKey(adminParam.getParamKey());
+        Optional<AdminParam> optionalAdminParam = adminParamRepository.findAdminParamByParamKey(adminParam.getParamKey());
         if (!optionalAdminParam.isPresent()) {
             logger.info("create admin param");
             param.setId(new ObjectId().toString());
