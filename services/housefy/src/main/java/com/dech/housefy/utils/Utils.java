@@ -43,7 +43,7 @@ public class Utils {
         for (Field field : dto.getClass().getDeclaredFields()) {
             try {
               field.setAccessible(true);
-              if(field.get(dto) != null && field.get(dto).toString() != "")
+              if(field.get(dto) != null && !field.get(dto).toString().isEmpty())
                  fields.put(field.getName(), field.get(dto).toString());
             } catch (IllegalAccessException e) {
               e.printStackTrace();

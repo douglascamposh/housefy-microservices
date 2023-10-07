@@ -35,26 +35,27 @@ public class SaleServiceImpl implements ISaleService {
 
     @Override
     public SoldPropertyFormDTO create(SoldPropertyFormDTO soldForm) {
-        if (soldForm.getStatus() != StateSales.SOLD.name() || soldForm.getStatus() != StateSales.RESERVED.name()) {
+        if (soldForm.getStatus().equals(StateSales.SOLD.name()) || soldForm.getStatus().equals(StateSales.RESERVED.name())) {
+            Optional<Sale> saleFound = saleRepository.findBySubPropertyId(soldForm.getSubPropertyId());
+            if (saleFound.isPresent()) {
+                logger.error("It could not save Sale with Sub property Id: " + soldForm.getSubPropertyId() + " because it was created before.");
+                throw new DuplicateDataException("Sale with sub property Id: " + soldForm.getSubPropertyId() + " it was registered before.");
+            }
+            Sale sale = modelMapper.map(soldForm, Sale.class);
+            sale.setId(null);
+            sale.setCustomerId(soldForm.getCustomer().getId());
+            sale.setBalance(calculateBalance(soldForm.getTotal(), soldForm.getOnAccount()));
+            sale.setCreatedAt(Utils.getCurrentDate());
+            if (sale.getStatus().equals(StateSales.RESERVED.name())) {
+                Long expirationDate = Utils.getValueFromParams(adminParamRepository.findAdminParamByParamKey(Constants.EXPIRATION_DATE_SALES), Constants.EXPIRATION_DATE_SALES, Constants.DEFAULT_EXPIRATION_DATE_SALES);
+                sale.setReservationExpiresDate(expirationDate);
+            }
+            Sale newSale = saleRepository.save(sale);
+            logger.info("Sale created with Sub Property Id: " + newSale.getSubPropertyId());
+            return modelMapper.map(newSale, SoldPropertyFormDTO.class);
+        } else {
             throw new InternalErrorException("Status should be SOLD or RESERVED");
         }
-        Optional<Sale> saleFound = saleRepository.findBySubPropertyId(soldForm.getSubPropertyId());
-        if (saleFound.isPresent()) {
-            logger.error("It could not save Sale with Sub property Id: " + soldForm.getSubPropertyId() + " because it was created before.");
-            throw new DuplicateDataException("Sale with sub property Id: " + soldForm.getSubPropertyId() + " it was registered before.");
-        }
-        Sale sale = modelMapper.map(soldForm, Sale.class);
-        sale.setId(null);
-        sale.setCustomerId(soldForm.getCustomer().getId());
-        sale.setBalance(calculateBalance(soldForm.getTotal(), soldForm.getOnAccount()));
-        sale.setCreatedAt(Utils.getCurrentDate());
-        if (sale.getStatus() == StateSales.RESERVED.name()) {
-            Long expirationDate = Utils.getValueFromParams(adminParamRepository.findAdminParamByParamKey(Constants.EXPIRATION_DATE_SALES), Constants.EXPIRATION_DATE_SALES, Constants.DEFAULT_EXPIRATION_DATE_SALES);
-            sale.setReservationExpiresDate(expirationDate);
-        }
-        Sale newSale = saleRepository.save(sale);
-        logger.info("Sale created with Sub Property Id: " + newSale.getSubPropertyId());
-        return modelMapper.map(newSale, SoldPropertyFormDTO.class);
     }
 
     @Override
