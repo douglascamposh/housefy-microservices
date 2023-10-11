@@ -33,11 +33,20 @@ public class SalesmanImpl implements ISalesmanService{
 
         List<Salesman> salesmen = salesmenCreateDTO.stream().map(salesmanDTO -> modelMapper.map(salesmanDTO, Salesman.class)).collect(Collectors.toList());
         List<Salesman> savedSalesmen = salesmen.stream()
-                .filter(salesman -> !salesmanRepository.existsByNameAndLastName(salesman.getName(), salesman.getLastName()))
+                .filter(salesman -> !isDuplicate(salesman))
                 .map(salesmanRepository::save)
                 .collect(Collectors.toList());
 
         List<SalesmanDTO> salesmenDTO = savedSalesmen.stream().map(salesman -> modelMapper.map(salesman, SalesmanDTO.class)).collect(Collectors.toList());
+        logger.info("Successfully created " + salesmenDTO.size() + " salesmen.");
         return salesmenDTO;
+    }
+
+    private boolean isDuplicate(Salesman salesman){
+        boolean isDuplicate =  salesmanRepository.existsByNameAndLastName(salesman.getName(), salesman.getLastName());
+        if (isDuplicate) {
+            logger.info("Filtered out duplicate Saleman: " + salesman.getName() + " " + salesman.getLastName());
+        }
+        return isDuplicate;
     }
 }
