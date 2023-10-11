@@ -34,6 +34,10 @@ public class PropertyFacadeImpl implements IPropertyFacade {
         List<SaleDTO> saleDTOList = saleService.findAllByPropertyId(propertyId);
         return propertyInfo.getSubProperties().stream()
                 .map(subPropertyInfoDTO -> {
+                    if(subPropertyInfoDTO.getCommonArea()) {
+                        subPropertyInfoDTO.setIsAvailable(false);
+                        return subPropertyInfoDTO;
+                    }
                     Optional<SaleDTO> saleOptional = saleDTOList.stream().filter(saleDTO -> saleDTO.getSubPropertyId().equals(subPropertyInfoDTO.getId())).findFirst();
                     subPropertyInfoDTO.setPropertyId(propertyId);
                     if (saleOptional.isPresent()) {

@@ -19,4 +19,5 @@ public class SubProperty {
     private Long size;
     private Float price;
     private String svgId;
+    private Boolean commonArea;
 }

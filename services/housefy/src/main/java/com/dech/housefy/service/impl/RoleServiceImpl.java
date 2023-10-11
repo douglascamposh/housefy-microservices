@@ -57,7 +57,7 @@ public class RoleServiceImpl implements IRoleService {
 
         Optional<Role> existingRole = roleRepository.findRoleByRoleName(roleDTO.getRoleName());
         if(existingRole.isPresent()){
-            throw new DataNotFoundException("A role with this name already exists. : " + roleDTO.getRoleName());
+            throw new DuplicateDataException("A role with this name already exists. : " + roleDTO.getRoleName());
         }
         Role roleToUpdate = modelMapper.map(roleDTO, Role.class);
         return modelMapper.map(roleRepository.save(roleToUpdate), RoleDTO.class);
