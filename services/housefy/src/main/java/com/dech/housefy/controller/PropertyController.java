@@ -85,7 +85,7 @@ public class PropertyController {
 
     @PutMapping(value = "{id}/subproperties/{subId}")
     @ResponseStatus(HttpStatus.OK)
-    public SubPropertyDTO getPropertyInfo(
+    public SubPropertyDTO updatePropertyInfo(
             @Valid @NotNull @PathVariable("id") String id,
             @Valid @NotNull @PathVariable("subId") String subId,
             @Valid @RequestBody SubPropertyDTO subPropertyDTO) {

@@ -15,7 +15,7 @@ public class SubPropertyDTO {
     private String code;
     @Positive
     private Float size;
-    @Positive
     private Float price;
     private String svgId;
+    private Boolean commonArea = false;
 }

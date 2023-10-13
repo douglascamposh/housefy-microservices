@@ -70,6 +70,9 @@ public class PropertyServiceImpl implements IPropertyService {
         if (subPropertyFound.isPresent()) {
             throw new DuplicateDataException("The element with code: " + subPropertyDTO.getCode() + " is already added");
         }
+        if (subPropertyDTO.getCommonArea()) {
+            subPropertyDTO.setPrice(0f);
+        }
         SubProperty subProperty = modelMapper.map(subPropertyDTO, SubProperty.class);
         subProperty.setId(new ObjectId().toString());
         propertyRepositoryImpl.addSubProperty(propertyId, subProperty);
