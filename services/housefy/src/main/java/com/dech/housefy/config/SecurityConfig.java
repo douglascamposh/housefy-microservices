@@ -40,7 +40,9 @@ public class SecurityConfig {
         "/api/v1/config",
         "/api/v1/config/*",
         "/api/v1/saleman",
-        "/api/v1/saleman/*"
+        "/api/v1/saleman/*",
+        "/api/v1/roles",
+        "/api/v1/roles/*"
     };
 
     @Bean
