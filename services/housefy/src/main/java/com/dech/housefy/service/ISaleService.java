@@ -11,4 +11,5 @@ public interface ISaleService {
     SoldPropertyFormDTO create(SoldPropertyFormDTO soldPropertyFormDTO);
     List<SaleDTO> findAllByPropertyId(String propertyId);
     SaleDTO findByIdSubPropertyId(String subPropertyId);
+    void deleteExpiredSales();
 }

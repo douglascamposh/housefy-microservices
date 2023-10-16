@@ -1,7 +1,6 @@
 package com.dech.housefy.domain;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -27,4 +26,5 @@ public class Sale {
     private String status;
     private Long createdAt;
     private Long reservationExpiresDate;
+    private boolean deleted;
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ISaleRepository extends MongoRepository<Sale, String> {
-    Optional<Sale> findBySubPropertyId(String subPropertyId);
+    Optional<Sale> findBySubPropertyIdAndDeletedIsFalse(String subPropertyId);
     List<Sale> findAllByPropertyId(String propertyId);
+    List<Sale> findAllByReservationExpiresDateIsLessThanAndDeletedIsFalse(Long currentDate);
 }

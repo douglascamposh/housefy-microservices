@@ -3,7 +3,6 @@ package com.dech.housefy.controller;
 import com.dech.housefy.dto.SoldPropertyFormDTO;
 import com.dech.housefy.service.ISaleService;
 import com.dech.housefy.service.facade.IPropertyFacade;
-import com.dech.housefy.service.impl.SaleServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

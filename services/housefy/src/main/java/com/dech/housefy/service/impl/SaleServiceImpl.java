@@ -36,7 +36,7 @@ public class SaleServiceImpl implements ISaleService {
     @Override
     public SoldPropertyFormDTO create(SoldPropertyFormDTO soldForm) {
         if (soldForm.getStatus().equals(StateSales.SOLD.name()) || soldForm.getStatus().equals(StateSales.RESERVED.name())) {
-            Optional<Sale> saleFound = saleRepository.findBySubPropertyId(soldForm.getSubPropertyId());
+            Optional<Sale> saleFound = saleRepository.findBySubPropertyIdAndDeletedIsFalse(soldForm.getSubPropertyId());
             if (saleFound.isPresent()) {
                 logger.error("It could not save Sale with Sub property Id: " + soldForm.getSubPropertyId() + " because it was created before.");
                 throw new DuplicateDataException("Sale with sub property Id: " + soldForm.getSubPropertyId() + " it was registered before.");
@@ -48,7 +48,7 @@ public class SaleServiceImpl implements ISaleService {
             sale.setCreatedAt(Utils.getCurrentDate());
             if (sale.getStatus().equals(StateSales.RESERVED.name())) {
                 Long expirationDate = Utils.getValueFromParams(adminParamRepository.findAdminParamByParamKey(Constants.EXPIRATION_DATE_SALES), Constants.EXPIRATION_DATE_SALES, Constants.DEFAULT_EXPIRATION_DATE_SALES);
-                sale.setReservationExpiresDate(expirationDate);
+                sale.setReservationExpiresDate(Utils.addDaysToDate(expirationDate));
             }
             Sale newSale = saleRepository.save(sale);
             logger.info("Sale created with Sub Property Id: " + newSale.getSubPropertyId());
@@ -65,8 +65,18 @@ public class SaleServiceImpl implements ISaleService {
 
     @Override
     public SaleDTO findByIdSubPropertyId(String subPropertyId) {
-        Optional<Sale> saleFound = saleRepository.findBySubPropertyId(subPropertyId);
+        Optional<Sale> saleFound = saleRepository.findBySubPropertyIdAndDeletedIsFalse(subPropertyId);
         return saleFound.map(sale -> modelMapper.map(sale, SaleDTO.class)).orElse(null);
+    }
+
+    @Override
+    public void deleteExpiredSales() {
+        logger.info("Deleting all Sales that expiration date is less than current date");
+        List<Sale> sales = saleRepository.findAllByReservationExpiresDateIsLessThanAndDeletedIsFalse(Utils.getCurrentDate());
+        sales.stream().forEach(sale -> {
+            sale.setDeleted(true);
+            saleRepository.save(sale);
+        });
     }
 
     private Float calculateBalance(Float total, Float onAccount) {
