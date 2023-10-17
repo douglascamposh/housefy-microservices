@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class PropertyFacadeImpl implements IPropertyFacade {
 //        propertyInfo.setPropertiesAvailable(propertyInfoDTOS.stream().filter(subProp -> subProp.getBalance() == null).count());
     }
 
+    @Transactional
     @Override
     public SoldPropertyFormDTO soldProperty(SoldPropertyFormDTO soldForm) {
         PropertyDTO propertyDTO = propertyService.findByPropertyIdAndSubPropertyId(soldForm.getPropertyId(), soldForm.getSubPropertyId());
