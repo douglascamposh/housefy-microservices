@@ -15,4 +15,5 @@ public class SubPropertyInfoDTO {
     private CustomerDTO customer;
     private Boolean isAvailable;
     private Boolean commonArea;
+    private String status;
 }
