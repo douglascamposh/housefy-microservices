@@ -6,6 +6,8 @@ import com.dech.housefy.error.DuplicateDataException;
 import com.dech.housefy.repository.IPropertyRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class PropertyRepositoryImpl implements IPropertyRepositoryImpl {
     private final MongoTemplate mongoTemplate;
+    private final Logger logger = LoggerFactory.getLogger(PropertyRepositoryImpl.class);
 
     @Override
     public Property addSubProperty(String propertyId, SubProperty subProperty) {
+        logger.info("Add sub property to property with id: " + propertyId);
         Update update = new Update();
         update.push("subProperties", subProperty);
         Query query = new Query(Criteria.where("_id").is(propertyId));
@@ -29,6 +33,7 @@ public class PropertyRepositoryImpl implements IPropertyRepositoryImpl {
 
     @Override
     public Property updateSubProperty(String propertyId, SubProperty subProperty) {
+        logger.info("Update sub property with sub id: " + subProperty.getId());
         Update update = new Update();
         Query query = new Query(Criteria.where("_id").is(propertyId).and("subProperties.id").is(subProperty.getId()));
         update.set("subProperties.$", subProperty);
@@ -38,6 +43,7 @@ public class PropertyRepositoryImpl implements IPropertyRepositoryImpl {
 
     @Override
     public void deleteSubProperty(String propertyId, String subPropertyId) {
+        logger.info("Delete sub property with sub id: " + subPropertyId + "from property Id: " + propertyId);
         Update update = new Update();
         Query query = new Query(Criteria.where("_id").is(propertyId).and("subProperties.id").is(subPropertyId));
         update.pull("subProperties", new Query(Criteria.where("_id").is(subPropertyId)));

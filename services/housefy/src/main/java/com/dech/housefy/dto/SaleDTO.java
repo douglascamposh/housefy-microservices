@@ -11,5 +11,7 @@ public class SaleDTO {
     private String subPropertyId;
     private String propertyId;
     private String customerId;
+    private String status;
+    private Long reservationExpiresDate;
     private boolean deleted;
 }

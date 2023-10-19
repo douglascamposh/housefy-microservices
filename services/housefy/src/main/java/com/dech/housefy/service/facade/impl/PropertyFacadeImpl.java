@@ -44,6 +44,8 @@ public class PropertyFacadeImpl implements IPropertyFacade {
                         subPropertyInfoDTO.setBalance(saleOptional.get().getBalance());
                         subPropertyInfoDTO.setOnAccount(saleOptional.get().getOnAccount());
                         subPropertyInfoDTO.setIsAvailable(false);
+                        subPropertyInfoDTO.setStatus(saleOptional.get().getStatus());
+                        subPropertyInfoDTO.setReservationExpiresDate(saleOptional.get().getReservationExpiresDate());
                         CustomerDTO customer = customerService.findById(saleOptional.get().getCustomerId());
                         subPropertyInfoDTO.setCustomer(customer);
                     } else {
@@ -94,6 +96,7 @@ public class PropertyFacadeImpl implements IPropertyFacade {
             if (imagePlanFound != null && !imageSvg.getId().equals(imagePlanFound.getId())) {
                 List<SaleDTO> saleDTO = saleService.findAllByPropertyId(propertyDTO.getId());
                 if (saleDTO.size() != 0) {
+                    logger.error("Some SubProperties are sold, it is not possible updated from propertyId: " + propertyDTO.getId());
                     throw new InternalErrorException("Some SubProperties belong to Property with Id: " + propertyDTO.getId() + "are already sold. It is not possible update it.");
                 } else {
                     logger.warn("Update the svg will remove the SubProperties are already created");

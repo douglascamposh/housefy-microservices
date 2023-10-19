@@ -57,6 +57,7 @@ public class PropertyServiceImpl implements IPropertyService {
 
     @Override
     public PropertyDTO update(PropertyDTO property) {
+        logger.info("Updating property with Id: " + property.getId());
         findById(property.getId());
         Property propertyToUpdate = modelMapper.map(property, Property.class);
         return modelMapper.map(propertyRepository.save(propertyToUpdate), PropertyDTO.class);
