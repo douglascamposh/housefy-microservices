@@ -44,6 +44,8 @@ public class PropertyFacadeImpl implements IPropertyFacade {
                         subPropertyInfoDTO.setBalance(saleOptional.get().getBalance());
                         subPropertyInfoDTO.setOnAccount(saleOptional.get().getOnAccount());
                         subPropertyInfoDTO.setIsAvailable(false);
+                        subPropertyInfoDTO.setStatus(saleOptional.get().getStatus());
+                        subPropertyInfoDTO.setReservationExpiresDate(saleOptional.get().getReservationExpiresDate());
                         CustomerDTO customer = customerService.findById(saleOptional.get().getCustomerId());
                         subPropertyInfoDTO.setCustomer(customer);
                     } else {

@@ -44,6 +44,16 @@ public class S3ServiceImpl implements IS3Service {
     private static final Logger logger = LoggerFactory.getLogger(S3ServiceImpl.class);
 
     private final S3Client s3client;
+
+    @Override
+    public ImageResponseDTO getImage(String imageId) {
+        String urlImage = getImageUri(bucketName, imageId, propertiesFolder + "/");
+        return ImageResponseDTO.builder()
+            .imageId(imageId)
+            .url(urlImage)
+            .build();
+    }
+
     @Override
     public ImageResponseDTO uploadImageProperties(ImageUploadDTO imageUploadDTO) {
         String filename = Utils.getUniqueKeyName(imageUploadDTO.getFilename().trim());
@@ -56,6 +66,26 @@ public class S3ServiceImpl implements IS3Service {
     @Override
     public void deleteImageProperties(String imageId) {
         deleteImage(bucketName, imageId, propertiesFolder + "/");
+    }
+
+    private String getImageUri(String customBucketName, String keyName, String foldersPath) {
+        try {
+            if(customBucketName.isEmpty()){
+                logger.error("Bucket name is empty");
+                throw new InternalErrorException("Bucket name is empty, please contact IT");
+            }
+            String url = s3client.utilities().getUrl(GetUrlRequest.builder()
+                    .bucket(customBucketName)
+                    .key(foldersPath + keyName)
+                    .build()
+            ).toExternalForm();
+            logger.info("Get Image - url: " + url);
+            return url;
+        } catch (SdkClientException ace) {
+            logger.info("Caught an AmazonClientException: ");
+            logger.info("Error Message: " + ace.getMessage());
+            throw ace;
+        }
     }
 
     private void deleteImage(String customBucketName, String keyName, String foldersPath) {
