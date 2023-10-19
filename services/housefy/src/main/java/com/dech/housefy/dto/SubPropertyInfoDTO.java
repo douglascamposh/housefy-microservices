@@ -16,4 +16,5 @@ public class SubPropertyInfoDTO {
     private Boolean isAvailable;
     private Boolean commonArea;
     private String status;
+    private Long reservationExpiresDate;
 }
