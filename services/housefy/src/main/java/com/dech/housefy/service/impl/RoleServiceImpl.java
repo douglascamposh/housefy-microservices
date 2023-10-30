@@ -54,10 +54,11 @@ public class RoleServiceImpl implements IRoleService {
         if(!existingIdRole.isPresent()){
             throw new DataNotFoundException("Unable to get Role by id: " + roleDTO.getId());
         }
-
-        Optional<Role> existingRole = roleRepository.findRoleByRoleName(roleDTO.getRoleName());
-        if(existingRole.isPresent()){
-            throw new DuplicateDataException("A role with this name already exists. : " + roleDTO.getRoleName());
+        if (existingIdRole.get().getRoleName() != roleDTO.getRoleName()) {
+            Optional<Role> existingRole = roleRepository.findRoleByRoleName(roleDTO.getRoleName());
+            if(existingRole.isPresent()){
+                throw new DuplicateDataException("A role with this name already exists. : " + roleDTO.getRoleName());
+            }
         }
         Role roleToUpdate = modelMapper.map(roleDTO, Role.class);
         return modelMapper.map(roleRepository.save(roleToUpdate), RoleDTO.class);
