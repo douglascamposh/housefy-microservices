@@ -54,7 +54,7 @@ public class RoleServiceImpl implements IRoleService {
         if(!existingIdRole.isPresent()){
             throw new DataNotFoundException("Unable to get Role by id: " + roleDTO.getId());
         }
-        if (existingIdRole.get().getRoleName() != roleDTO.getRoleName()) {
+        if (existingIdRole.get().getRoleName() != null && !existingIdRole.get().getRoleName().equals(roleDTO.getRoleName())) {
             Optional<Role> existingRole = roleRepository.findRoleByRoleName(roleDTO.getRoleName());
             if(existingRole.isPresent()){
                 throw new DuplicateDataException("A role with this name already exists. : " + roleDTO.getRoleName());
