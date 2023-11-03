@@ -34,4 +34,11 @@ public class AuthController {
         return userService.signin(signinRequest);
     }
 
+    @PostMapping("/refreshToken")
+    @ResponseStatus(HttpStatus.OK)
+    public JwtAuthResponse generateToken(@Valid @RequestBody JwtAuthResponse jwtAuth) {
+        logger.info("Trying to refresh token: " + jwtAuth.getToken());
+        return userService.refreshToken(jwtAuth);
+    }
+
 }

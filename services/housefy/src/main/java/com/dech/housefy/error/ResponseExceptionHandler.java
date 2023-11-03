@@ -1,5 +1,6 @@
 package com.dech.housefy.error;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -118,6 +119,20 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 //        );
 //        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
 //    }
+
+    @ExceptionHandler(value = { ExpiredJwtException.class })
+    public ResponseEntity handleExpiredJwtExceptions(
+            RuntimeException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                new Date(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                appName,
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler(value = { InternalErrorException.class })
     public ResponseEntity handleInternalErrorExceptions(

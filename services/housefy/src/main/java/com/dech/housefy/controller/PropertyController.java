@@ -18,7 +18,6 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@CrossOrigin
 @RequestMapping(PropertyController.BASE_CTRL_URL)
 public class PropertyController {
 

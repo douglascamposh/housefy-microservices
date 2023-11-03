@@ -9,4 +9,5 @@ public interface IUserService {
     UserDTO findByEmail(String email);
     JwtAuthResponse signup(SignupRequest signupRequest);
     JwtAuthResponse signin(SigninRequest signinRequest);
+    JwtAuthResponse refreshToken(JwtAuthResponse jwtAuthResponse);
 }

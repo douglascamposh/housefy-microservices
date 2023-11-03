@@ -58,9 +58,18 @@ public class UserServiceImpl implements IUserService {
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(signinRequest.getEmail(), signinRequest.getPassword())
         );
-        User user = userRepository.findUserByEmail(signinRequest.getEmail()).orElseThrow(() -> new InternalErrorException("User not found"));
+        User user = userRepository.findUserByEmail(signinRequest.getEmail()).orElseThrow(() -> new DataNotFoundException("User not found"));
         String jwt = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwt).build();
 
+    }
+
+    @Override
+    public JwtAuthResponse refreshToken(JwtAuthResponse jwtAuthResponse) {
+        String email = jwtService.getEmailFromToken(jwtAuthResponse.getToken());
+        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new DataNotFoundException("User not found"));
+        jwtService.isTokenValid(jwtAuthResponse.getToken(), user);
+        String jwt = jwtService.generateToken(user);
+        return JwtAuthResponse.builder().token(jwt).build();
     }
 }

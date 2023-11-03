@@ -49,11 +49,11 @@ public class AccessFilter extends OncePerRequestFilter {
         UserDetails user = userDetailsService.loadUserByUsername(email);
 
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
-
-        boolean hasAccess = checkAccess(roles, pageRequest, methodRequest);
-        if(!hasAccess){
-            throw new DataNotFoundException("User does not have access.");
-        }
+//TODO: add when the UI for roles is ready
+//        boolean hasAccess = checkAccess(roles, pageRequest, methodRequest);
+//        if(!hasAccess){
+//            throw new DataNotFoundException("User does not have access.");
+//        }
 
         filterChain.doFilter(request, response);
     }
