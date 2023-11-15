@@ -2,16 +2,13 @@ package com.dech.housefy.controller;
 
 import java.util.List;
 
+import com.dech.housefy.domain.Salesman;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dech.housefy.dto.CSVUploadDTO;
 import com.dech.housefy.dto.SalesmanDTO;
@@ -34,5 +31,24 @@ public class SalesmanController {
     public List<SalesmanDTO> uploadFile(HttpServletRequest request, @ModelAttribute CSVUploadDTO csvFileDTO) {
         logger.info("uploadCSVFile starting... filename {}", csvFileDTO.getFileName());
         return salesmanService.uploadCsvSalesmen(csvFileDTO.getFile());
+    }
+
+    @PostMapping
+    public SalesmanDTO createSalesman(@Valid @RequestBody SalesmanDTO salesmanDTO){
+        return this.salesmanService.createSalesman(salesmanDTO);
+    }
+    @GetMapping()
+    public List<SalesmanDTO> getSalesmanById(){
+        return this.salesmanService.getAllSalesman();
+    }
+
+    @GetMapping(path = "{id}")
+    public SalesmanDTO getSalesmanById(@PathVariable String id){
+        return this.salesmanService.getSalesmanById(id);
+    }
+
+    @PutMapping(path = "{id}")
+    public SalesmanDTO updateSalesman(@RequestBody SalesmanDTO salesman, @PathVariable String id){
+        return this.salesmanService.updateSalesman(salesman, id);
     }
 }

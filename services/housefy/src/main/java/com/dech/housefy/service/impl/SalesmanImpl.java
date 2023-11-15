@@ -1,10 +1,19 @@
 package com.dech.housefy.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.dech.housefy.domain.Customer;
+import com.dech.housefy.dto.CustomerDTO;
+import com.dech.housefy.dto.UserReferenceDTO;
+import com.dech.housefy.error.DataNotFoundException;
+import com.dech.housefy.error.DuplicateDataException;
+import com.dech.housefy.error.InternalErrorException;
+import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,6 +24,7 @@ import com.dech.housefy.repository.ISalesmanRepository;
 import com.dech.housefy.service.ISalesmanService;
 import com.dech.housefy.utils.Utils;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
@@ -42,11 +52,79 @@ public class SalesmanImpl implements ISalesmanService{
         return salesmenDTO;
     }
 
+    @Override
+    public SalesmanDTO createSalesman(SalesmanDTO salesmanDTO) {
+        var exist = salesmanRepository.existsByNameAndLastName(salesmanDTO.getName(),salesmanDTO.getLastName());
+        if (exist == false) {
+            var salesman = new Salesman();
+            salesman.setName(salesmanDTO.getName());
+            salesman.setLastName(salesmanDTO.getLastName());
+            salesman.setPhoneNumber(salesmanDTO.getPhoneNumber());
+
+            logger.info("salesman to create {}", salesman);
+            var salesmanCreated = this.salesmanRepository.save(salesman);
+            var newSalesmanDTO = this.entityToDto(salesmanCreated);
+
+            return newSalesmanDTO;
+        }
+        throw new DuplicateDataException("There is a salesman created with the name: " + salesmanDTO.getName() + " " + salesmanDTO.getLastName());
+    }
+
+    @Override
+    public SalesmanDTO getSalesmanById(String id) {
+        var salesman = this.salesmanRepository.findById(id).orElseThrow();
+
+        if (!salesman.getId().isEmpty()){
+            var salesmenDTO   = this.entityToDto(salesman);
+            logger.info("el id2 es {}", salesmenDTO.getId());
+            return salesmenDTO;
+        } else {
+            throw new DataNotFoundException("Unable to get Salesman with Id: " + id);
+        }
+
+    }
+
+    @Override
+    public List<SalesmanDTO> getAllSalesman() {
+        var salesman = this.salesmanRepository.findAll();
+        List<SalesmanDTO> salesmanDTO = new ArrayList<SalesmanDTO>();
+
+         salesman.forEach(x -> {
+             salesmanDTO.add(this.entityToDto(x));
+         });
+         return salesmanDTO;
+    }
+
+    @Override
+    public SalesmanDTO updateSalesman(SalesmanDTO salesman, String id) {
+        if(id.isEmpty()) throw new DataNotFoundException("The data can't be null" );
+
+        var salesmanToUpdate = this.salesmanRepository.findById(id).orElseThrow();
+        if (!salesmanToUpdate.getId().isEmpty()) {
+            salesmanToUpdate.setId(salesmanToUpdate.getId());
+            salesmanToUpdate.setName(salesman.getName());
+            salesmanToUpdate.setLastName(salesman.getLastName());
+            salesmanToUpdate.setPhoneNumber(salesman.getPhoneNumber());
+            this.salesmanRepository.save(salesmanToUpdate);
+
+            var salesmanDTO = this.entityToDto(salesmanToUpdate);
+            return salesmanDTO;
+        } else {
+            throw new DataNotFoundException("Unable to update Salesman with Id: " + salesman.getId());
+        }
+    }
+
     private boolean isDuplicate(Salesman salesman){
         boolean isDuplicate =  salesmanRepository.existsByNameAndLastName(salesman.getName(), salesman.getLastName());
         if (isDuplicate) {
             logger.info("Filtered out duplicate Saleman: " + salesman.getName() + " " + salesman.getLastName());
         }
         return isDuplicate;
+    }
+
+    private SalesmanDTO entityToDto(Salesman salesman){
+        var salesDto = new SalesmanDTO();
+        BeanUtils.copyProperties(salesman,salesDto);
+        return salesDto;
     }
 }
