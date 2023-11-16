@@ -53,18 +53,12 @@ public class SalesmanImpl implements ISalesmanService{
     }
 
     @Override
-    public SalesmanDTO createSalesman(SalesmanDTO salesmanDTO) {
-        var exist = salesmanRepository.existsByNameAndLastName(salesmanDTO.getName(),salesmanDTO.getLastName());
+    public SalesmanCreateDTO createSalesman(SalesmanDTO salesmanDTO) {
+        boolean exist = salesmanRepository.existsByNameAndLastName(salesmanDTO.getName(),salesmanDTO.getLastName());
         if (exist == false) {
-            var salesman = new Salesman();
-            salesman.setName(salesmanDTO.getName());
-            salesman.setLastName(salesmanDTO.getLastName());
-            salesman.setPhoneNumber(salesmanDTO.getPhoneNumber());
-
-            logger.info("salesman to create {}", salesman);
-            var salesmanCreated = this.salesmanRepository.save(salesman);
-            var newSalesmanDTO = this.entityToDto(salesmanCreated);
-
+            Salesman salesman = modelMapper.map(salesmanDTO, Salesman.class);
+            var salesmanCreated = salesmanRepository.save(salesman);
+            var newSalesmanDTO = modelMapper.map(salesmanCreated, SalesmanCreateDTO.class);
             return newSalesmanDTO;
         }
         throw new DuplicateDataException("There is a salesman created with the name: " + salesmanDTO.getName() + " " + salesmanDTO.getLastName());
@@ -72,12 +66,10 @@ public class SalesmanImpl implements ISalesmanService{
 
     @Override
     public SalesmanDTO getSalesmanById(String id) {
-        var salesman = this.salesmanRepository.findById(id).orElseThrow();
-
-        if (!salesman.getId().isEmpty()){
-            var salesmenDTO   = this.entityToDto(salesman);
-            logger.info("el id2 es {}", salesmenDTO.getId());
-            return salesmenDTO;
+        var salesman = this.salesmanRepository.findById(id);
+        if (!salesman.isEmpty()){
+            var salesmanDTO   = modelMapper.map(salesman, SalesmanDTO.class);
+            return salesmanDTO;
         } else {
             throw new DataNotFoundException("Unable to get Salesman with Id: " + id);
         }
@@ -88,26 +80,21 @@ public class SalesmanImpl implements ISalesmanService{
     public List<SalesmanDTO> getAllSalesman() {
         var salesman = this.salesmanRepository.findAll();
         List<SalesmanDTO> salesmanDTO = new ArrayList<SalesmanDTO>();
-
          salesman.forEach(x -> {
-             salesmanDTO.add(this.entityToDto(x));
+             salesmanDTO.add(modelMapper.map(x, SalesmanDTO.class));
          });
          return salesmanDTO;
     }
 
     @Override
-    public SalesmanDTO updateSalesman(SalesmanDTO salesman, String id) {
-        if(id.isEmpty()) throw new DataNotFoundException("The data can't be null" );
+    public SalesmanDTO updateSalesman(SalesmanDTO salesman) {
+        if(salesman.getId().isEmpty()) throw new DataNotFoundException("The data can't be null" );
 
-        var salesmanToUpdate = this.salesmanRepository.findById(id).orElseThrow();
+        var salesmanToUpdate = this.salesmanRepository.findById(salesman.getId()).orElseThrow();
         if (!salesmanToUpdate.getId().isEmpty()) {
-            salesmanToUpdate.setId(salesmanToUpdate.getId());
-            salesmanToUpdate.setName(salesman.getName());
-            salesmanToUpdate.setLastName(salesman.getLastName());
-            salesmanToUpdate.setPhoneNumber(salesman.getPhoneNumber());
+            salesmanToUpdate = modelMapper.map(salesman, Salesman.class);
             this.salesmanRepository.save(salesmanToUpdate);
-
-            var salesmanDTO = this.entityToDto(salesmanToUpdate);
+            var salesmanDTO = modelMapper.map(salesmanToUpdate, SalesmanDTO.class);
             return salesmanDTO;
         } else {
             throw new DataNotFoundException("Unable to update Salesman with Id: " + salesman.getId());
@@ -120,11 +107,5 @@ public class SalesmanImpl implements ISalesmanService{
             logger.info("Filtered out duplicate Saleman: " + salesman.getName() + " " + salesman.getLastName());
         }
         return isDuplicate;
-    }
-
-    private SalesmanDTO entityToDto(Salesman salesman){
-        var salesDto = new SalesmanDTO();
-        BeanUtils.copyProperties(salesman,salesDto);
-        return salesDto;
     }
 }

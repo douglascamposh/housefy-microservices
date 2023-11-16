@@ -3,6 +3,7 @@ package com.dech.housefy.controller;
 import java.util.List;
 
 import com.dech.housefy.domain.Salesman;
+import com.dech.housefy.dto.SalesmanCreateDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,7 @@ public class SalesmanController {
     }
 
     @PostMapping
-    public SalesmanDTO createSalesman(@Valid @RequestBody SalesmanDTO salesmanDTO){
+    public SalesmanCreateDTO createSalesman(@Valid @RequestBody SalesmanDTO salesmanDTO){
         return this.salesmanService.createSalesman(salesmanDTO);
     }
     @GetMapping()
@@ -47,8 +48,8 @@ public class SalesmanController {
         return this.salesmanService.getSalesmanById(id);
     }
 
-    @PutMapping(path = "{id}")
-    public SalesmanDTO updateSalesman(@RequestBody SalesmanDTO salesman, @PathVariable String id){
-        return this.salesmanService.updateSalesman(salesman, id);
+    @PutMapping()
+    public SalesmanDTO updateSalesman(@RequestBody SalesmanDTO salesman){
+        return this.salesmanService.updateSalesman(salesman);
     }
 }
