@@ -25,6 +25,7 @@ import com.dech.housefy.service.ISalesmanService;
 import com.dech.housefy.utils.Utils;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 
@@ -55,10 +56,11 @@ public class SalesmanImpl implements ISalesmanService{
     @Override
     public SalesmanCreateDTO createSalesman(SalesmanDTO salesmanDTO) {
         boolean exist = salesmanRepository.existsByNameAndLastName(salesmanDTO.getName(),salesmanDTO.getLastName());
-        if (exist == false) {
+        if (!exist) {
             Salesman salesman = modelMapper.map(salesmanDTO, Salesman.class);
-            var salesmanCreated = salesmanRepository.save(salesman);
-            var newSalesmanDTO = modelMapper.map(salesmanCreated, SalesmanCreateDTO.class);
+            Salesman salesmanCreated = salesmanRepository.save(salesman);
+            SalesmanCreateDTO newSalesmanDTO = modelMapper.map(salesmanCreated, SalesmanCreateDTO.class);
+
             return newSalesmanDTO;
         }
         throw new DuplicateDataException("There is a salesman created with the name: " + salesmanDTO.getName() + " " + salesmanDTO.getLastName());
@@ -66,9 +68,10 @@ public class SalesmanImpl implements ISalesmanService{
 
     @Override
     public SalesmanDTO getSalesmanById(String id) {
-        var salesman = this.salesmanRepository.findById(id);
-        if (!salesman.isEmpty()){
-            var salesmanDTO   = modelMapper.map(salesman, SalesmanDTO.class);
+        Optional<Salesman> salesman = this.salesmanRepository.findById(id);
+        if (salesman.isPresent()){
+            SalesmanDTO salesmanDTO   = modelMapper.map(salesman, SalesmanDTO.class);
+
             return salesmanDTO;
         } else {
             throw new DataNotFoundException("Unable to get Salesman with Id: " + id);
@@ -78,11 +81,12 @@ public class SalesmanImpl implements ISalesmanService{
 
     @Override
     public List<SalesmanDTO> getAllSalesman() {
-        var salesman = this.salesmanRepository.findAll();
+        List<Salesman> salesman = this.salesmanRepository.findAll();
         List<SalesmanDTO> salesmanDTO = new ArrayList<SalesmanDTO>();
          salesman.forEach(x -> {
              salesmanDTO.add(modelMapper.map(x, SalesmanDTO.class));
          });
+
          return salesmanDTO;
     }
 
@@ -90,11 +94,10 @@ public class SalesmanImpl implements ISalesmanService{
     public SalesmanDTO updateSalesman(SalesmanDTO salesman) {
         if(salesman.getId().isEmpty()) throw new DataNotFoundException("The data can't be null" );
 
-        var salesmanToUpdate = this.salesmanRepository.findById(salesman.getId()).orElseThrow();
-        if (!salesmanToUpdate.getId().isEmpty()) {
-            salesmanToUpdate = modelMapper.map(salesman, Salesman.class);
-            this.salesmanRepository.save(salesmanToUpdate);
-            var salesmanDTO = modelMapper.map(salesmanToUpdate, SalesmanDTO.class);
+        Optional<Salesman> exist = this.salesmanRepository.findById(salesman.getId());
+        if (exist.isPresent()) {
+            Salesman salesmanUpdated = this.salesmanRepository.save(modelMapper.map(salesman, Salesman.class));
+            SalesmanDTO salesmanDTO = modelMapper.map(salesmanUpdated, SalesmanDTO.class);
             return salesmanDTO;
         } else {
             throw new DataNotFoundException("Unable to update Salesman with Id: " + salesman.getId());
