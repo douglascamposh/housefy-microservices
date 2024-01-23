@@ -10,4 +10,5 @@ public interface IUserService {
     JwtAuthResponse signup(SignupRequest signupRequest);
     JwtAuthResponse signin(SigninRequest signinRequest);
     JwtAuthResponse refreshToken(JwtAuthResponse jwtAuthResponse);
+    UserDTO addRoleUser(String email, String role);
 }

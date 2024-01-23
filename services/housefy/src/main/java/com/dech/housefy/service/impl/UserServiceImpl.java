@@ -1,5 +1,6 @@
 package com.dech.housefy.service.impl;
 
+import com.dech.housefy.domain.Role;
 import com.dech.housefy.domain.User;
 import com.dech.housefy.dto.JwtAuthResponse;
 import com.dech.housefy.dto.SigninRequest;
@@ -12,6 +13,8 @@ import com.dech.housefy.repository.IUserRepository;
 import com.dech.housefy.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,6 +32,8 @@ public class UserServiceImpl implements IUserService {
     private final JwtServiceImpl jwtService;
     private final AuthenticationManager authenticationManager;
     private final ModelMapper modelMapper;
+
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     @Override
     public UserDTO findByEmail(String email) {
         Optional<User> userOptional = userRepository.findUserByEmail(email);
@@ -41,6 +46,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public JwtAuthResponse signup(SignupRequest signupRequest) {
         if (userRepository.findUserByEmail(signupRequest.getEmail()).isPresent()) {
+            logger.error("User with email: " + signupRequest.getEmail() + " already exists on DB");
             throw new InternalErrorException("User with email: " + signupRequest.getEmail() + " already exists");
         }
         User user = modelMapper.map(signupRequest, User.class);
@@ -71,5 +77,19 @@ public class UserServiceImpl implements IUserService {
         jwtService.isTokenValid(jwtAuthResponse.getToken(), user);
         String jwt = jwtService.generateToken(user);
         return JwtAuthResponse.builder().token(jwt).build();
+    }
+
+    @Override
+    public UserDTO addRoleUser(String email, String role) {
+        if (!userRepository.findUserByEmail(email).isPresent()) {
+            logger.error("User with email: " + email + " does not exists on DB");
+            throw new InternalErrorException("User with email: " + email + " does not exists");
+        }
+        User user = userRepository.findUserByEmail(email).get();
+        List<String> roles = user.getRoles();
+        roles.add(role);
+        user.setRoles(roles);
+        User userUpdated = userRepository.save(user);
+        return modelMapper.map(userUpdated, UserDTO.class);
     }
 }

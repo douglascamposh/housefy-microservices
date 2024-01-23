@@ -1,6 +1,7 @@
 package com.dech.housefy.security;
 
 import com.dech.housefy.dto.RoleDTO;
+import com.dech.housefy.enums.RoleEnums;
 import com.dech.housefy.error.UnauthorizedException;
 import com.dech.housefy.service.IJwtService;
 import com.dech.housefy.service.IRoleService;
@@ -47,13 +48,17 @@ public class AccessFilter extends OncePerRequestFilter {
         UserDetails user = userDetailsService.loadUserByUsername(email);
 
         Collection<? extends GrantedAuthority> roles = user.getAuthorities();
-        //TODO: if is admin should check their access?
-        boolean hasAccess = checkAccess(roles, pageRequest, methodRequest);
+
+        boolean hasAccess = isAdmin(roles) || checkAccess(roles, pageRequest, methodRequest);
         if(!hasAccess){
             throw new UnauthorizedException("User does not have access.");
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isAdmin(Collection<? extends GrantedAuthority> roles) {
+        return roles.stream().anyMatch(role -> role.equals(RoleEnums.ROLE_ADMIN.toString()));
     }
 
     private boolean checkAccess(Collection<? extends GrantedAuthority> roles, String pageRequest, String methodRequest) {
