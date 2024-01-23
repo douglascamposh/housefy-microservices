@@ -106,19 +106,19 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler(value = { UnauthorizedException.class })
-//    public ResponseEntity handleUnauthorizedExceptions(
-//            RuntimeException ex, WebRequest request) {
-//        ErrorResponse error = new ErrorResponse(
-//                new Date(),
-//                HttpStatus.UNAUTHORIZED.value(),
-//                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
-//                ex.getMessage(),
-//                appName,
-//                request.getDescription(false)
-//        );
-//        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
-//    }
+    @ExceptionHandler(value = { UnauthorizedException.class })
+    public ResponseEntity handleUnauthorizedExceptions(
+            RuntimeException ex, WebRequest request) {
+        ErrorResponse error = new ErrorResponse(
+                new Date(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                appName,
+                request.getDescription(false)
+        );
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
 
     @ExceptionHandler(value = { ExpiredJwtException.class })
     public ResponseEntity handleExpiredJwtExceptions(
