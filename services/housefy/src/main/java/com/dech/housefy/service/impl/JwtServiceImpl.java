@@ -1,10 +1,9 @@
 package com.dech.housefy.service.impl;
 
 import com.dech.housefy.domain.User;
+import com.dech.housefy.error.UnauthorizedException;
 import com.dech.housefy.service.IJwtService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
