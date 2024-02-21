@@ -73,7 +73,7 @@ public class AccessFilter extends OncePerRequestFilter {
             return roleDto.getPermissions().stream()
                 .anyMatch(permission -> {
                     String page = permission.getPage();
-                    return pageRequest.startsWith(page) && permission.getMethods().contains(methodRequest);}
+                    return pageRequest.contains(page) && permission.getMethods().contains(methodRequest);}
                 );
         }
         return false;
