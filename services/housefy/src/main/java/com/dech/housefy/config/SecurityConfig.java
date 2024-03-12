@@ -46,6 +46,8 @@ public class SecurityConfig {
         "/api/v1/s3",
         "/api/v1/s3/*",
         "/api/v1/s3/**",
+        "/api/v1/users",
+        "/api/v1/users/*",
     };
 
     @Bean

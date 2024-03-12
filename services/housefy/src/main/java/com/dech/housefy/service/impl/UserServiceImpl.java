@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -91,5 +92,10 @@ public class UserServiceImpl implements IUserService {
         user.setRoles(roles);
         User userUpdated = userRepository.save(user);
         return modelMapper.map(userUpdated, UserDTO.class);
+    }
+
+    @Override
+    public List<UserDTO> getUsers() {
+        return userRepository.findAll().stream().map(user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList());
     }
 }
